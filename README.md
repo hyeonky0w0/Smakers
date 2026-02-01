@@ -7,6 +7,9 @@
 - **Language**: Java 17
 - **API Documentation**: Swagger (Springdoc OpenAPI)
 
+=======
+## 🏗 Project Structure
+- `.github`: 이슈 및 PR 템플릿
 ### Requirements
 - Java 17 이상
 - IDE (IntelliJ IDEA 권장)
