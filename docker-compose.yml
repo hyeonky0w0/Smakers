@@ -1,0 +1,44 @@
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: smakers-mysql
+    restart: always
+    environment:
+      MYSQL_DATABASE: smakers
+      MYSQL_USER: root
+      MYSQL_PASSWORD: 1234
+      MYSQL_ROOT_PASSWORD: 1234
+      TZ: Asia/Seoul
+    volumes:
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h 127.0.0.1 -uroot -p$$MYSQL_ROOT_PASSWORD --silent"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+  spring:
+    build: .
+    container_name: smakers-spring
+    env_file:
+      - .env
+    restart: always
+    depends_on:
+      mysql:
+        condition: service_healthy
+    expose:
+      - "8080"
+
+  nginx:
+    image: nginx:latest
+    container_name: smakers-nginx
+    restart: always
+    ports:
+      - "80:80"
+    depends_on:
+      - spring
+    volumes:
+      - ./nginx/conf.d:/etc/nginx/conf.d:ro
+
+volumes:
+  mysql_data:
