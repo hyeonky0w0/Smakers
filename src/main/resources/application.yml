@@ -7,6 +7,8 @@ spring:
     username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
   jpa:
+    database: mysql
+    database-platform: org.hibernate.dialect.MySQLDialect
     hibernate:
       ddl-auto: update
     properties:
@@ -18,3 +20,25 @@ management:
     web:
       exposure:
         include: health
+
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 50MB
+      resolve-lazily: true
+
+cloud:
+  aws:
+    s3:
+      bucket-name: smakers-bucket
+    credentials:
+      access-key: ${AWS_ACCESS_KEY_ID}
+      secret-key: ${AWS_SECRET_ACCESS_KEY}
+    region:
+      static: ap-northeast-2
+    stack:
+      auto: false
+
+cors:
+  allowed-origins: http://localhost:5500,http://localhost:5173,http://localhost:63342
+
