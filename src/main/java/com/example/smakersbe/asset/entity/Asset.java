@@ -27,7 +27,4 @@ public class Asset {
     @Column(name="asset_url", length = 1000, nullable = false)
     private String assetUrl;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name ="user_id", nullable = false)
-    private User user;
 }

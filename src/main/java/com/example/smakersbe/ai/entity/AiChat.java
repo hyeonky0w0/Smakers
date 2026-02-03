@@ -22,10 +22,10 @@ public class AiChat {
     @Column(name="ai_chat_id", nullable = false, updatable = false)
     private Long aiChatId;
 
-    @Column(name="question", nullable = false)
+    @Column(name="question", columnDefinition = "TEXT", nullable = false)
     private String question;
 
-    @Column(name="answer", nullable = false)
+    @Column(name="answer", columnDefinition = "TEXT", nullable = false)
     private String answer;
 
     @Column(name="is_important", nullable = false)
@@ -37,4 +37,8 @@ public class AiChat {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name ="asset_id", nullable = false)
     private Asset asset;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name ="user_id", nullable = false)
+    private User user;
 }
