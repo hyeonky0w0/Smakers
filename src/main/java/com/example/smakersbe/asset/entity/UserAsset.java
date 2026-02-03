@@ -27,4 +27,8 @@ public class UserAsset {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name ="user_id", nullable = false)
     private User user;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name ="asset_id", nullable = false)
+    private Asset asset;
 }

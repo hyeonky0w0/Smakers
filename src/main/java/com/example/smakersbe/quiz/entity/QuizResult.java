@@ -37,7 +37,7 @@ public class QuizResult {
     private String aiReview;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name ="answer_id", nullable = false)
-    private QuizUserAnswer quizUserAnswer;
+    @JoinColumn(name ="quiz_attempt_id", nullable = false)
+    private QuizAttempt quizAttempt;
 
 }

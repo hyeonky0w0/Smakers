@@ -7,19 +7,17 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
-
 @Entity
-@Table(name = "quizzes")
+@Table(name = "quiz_set_items")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Quiz {
+public class QuizSetItem {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="quiz_id", nullable = false, updatable = false)
-    private Long quizId;
+    @Column(name="quiz_set_item_id", nullable = false, updatable = false)
+    private Long quizSetItemId;
 
     @Column(name="question", columnDefinition = "TEXT",nullable = false)
     private String question;
@@ -33,12 +31,8 @@ public class Quiz {
     @Column(name="explanation",columnDefinition = "TEXT", nullable = false)
     private String explanation;
 
-
     @Column(name="hint", columnDefinition = "TEXT",nullable = false)
     private String hint;
-
-    @Column(name="created_at", nullable = false)
-    private LocalDateTime createdAt;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name ="asset_id", nullable = false)

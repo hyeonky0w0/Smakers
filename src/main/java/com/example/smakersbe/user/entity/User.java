@@ -20,7 +20,7 @@ public class User {
     private Long userId;
 
     @Column(name="uuid", nullable = false)
-    private String uuId;
+    private String uuid;
 
     @Column(name="created_at", nullable = false)
     private LocalDateTime createdAt;

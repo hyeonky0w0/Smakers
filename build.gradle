@@ -39,6 +39,10 @@ dependencies {
     //s3
     implementation platform('software.amazon.awssdk:bom:2.20.120')
     implementation 'software.amazon.awssdk:s3'
+
+    //json 파싱
+    implementation 'com.google.code.gson:gson:2.10.1'
+    implementation 'org.json:json:20231013'
 }
 
 tasks.named('test') {

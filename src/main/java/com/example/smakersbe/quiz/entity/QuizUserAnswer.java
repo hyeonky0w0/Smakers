@@ -1,11 +1,12 @@
 package com.example.smakersbe.quiz.entity;
 
-import com.example.smakersbe.user.entity.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "quiz_user_answers")
@@ -16,8 +17,8 @@ import lombok.NoArgsConstructor;
 public class QuizUserAnswer {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="answer_id", nullable = false, updatable = false)
-    private Long answerId;
+    @Column(name="quiz_user_answer_id", nullable = false, updatable = false)
+    private Long quizUserAnswerId;
 
     @Column(name="user_choice", nullable = false)
     private Long userChoice;
@@ -25,7 +26,10 @@ public class QuizUserAnswer {
     @Column(name="is_correct", nullable = false)
     private Boolean isCorrect = false;
 
+    @Column(name="created_at", nullable = false)
+    private LocalDateTime createdAt;
+
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name ="quiz_id", nullable = false)
-    private Quiz quiz;
+    @JoinColumn(name ="quiz_attempt_id", nullable = false)
+    private QuizAttempt quizAttempt;
 }
