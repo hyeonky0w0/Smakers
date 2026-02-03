@@ -110,7 +110,7 @@ public class AiChatServiceImpl implements AiChatService {
             // 2. 바디 구성 (JSONObject 활용)
             JSONObject requestBody = new JSONObject();
             requestBody.put("model", "gpt-5-mini");
-            requestBody.put("max_completion_tokens", 500);
+            requestBody.put("max_completion_tokens", 2000);
 
             JSONArray messages = new JSONArray();
 
@@ -118,14 +118,14 @@ public class AiChatServiceImpl implements AiChatService {
             messages.put(new JSONObject()
                     .put("role", "system")
                     .put("content", "너는 기계공학 학생 도우미.\n" +
-                            "1. 질문에 대해 1~2문장으로 즉각적인 답변을 하고, 세부 사항은 불렛 포인트로 나열.\n" +
-                            "2. 설명은 이미 알려진 기계공학 상식 수준으로만 작성.\n" +
-                            "3. 내부 판단 과정은 생략하고 결과만 출력.\n"));
+                            "1. [요약], [설명] 두 섹션으로 구성할 것.\n" +
+                            "2. [요약]은 1줄 이내 단답형으로 작성.\n" +
+                            "3. [설명]은 3~5개의 불렛 포인트로 핵심만 나열.\n"));
 
             // User 메시지: 실제 질문
             messages.put(new JSONObject()
                     .put("role", "user")
-                    .put("content", question));
+                    .put("content", "이게 내가 분석할 에셋 정보야:\n"+ context + "\n\n질문: " + question));
 
             requestBody.put("messages", messages);
 
