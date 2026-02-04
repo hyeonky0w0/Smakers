@@ -43,8 +43,8 @@ public class AiChatServiceImpl implements AiChatService {
 
     // 질문 - 답변 서비스
     @Transactional
-    public AiChatResponseDTO sendQuestion(AiChatRequestDTO requestDTO) {
-        Asset asset = assetRepository.findById(requestDTO.getAssetId())
+    public AiChatResponseDTO sendQuestion(AiChatRequestDTO requestDTO, Long assetId) {
+        Asset asset = assetRepository.findById(assetId)
                 .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 에셋"));
 
         User user = userRepository.findByUuid(requestDTO.getUuid())
