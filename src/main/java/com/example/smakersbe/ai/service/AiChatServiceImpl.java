@@ -25,6 +25,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -51,7 +52,7 @@ public class AiChatServiceImpl implements AiChatService {
                 .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 회원"));
 
         // AI에게 전달하는 에셋+부품 내용 (맥락)
-        String context= buildAssetContext(asset);
+        String context = buildAssetContext(asset);
         String aiAnswer = getAiAnswer(requestDTO.getQuestion(), context);
 
         // ai 호출 메서드
@@ -68,8 +69,21 @@ public class AiChatServiceImpl implements AiChatService {
 
         aiChatRepository.save(aiChat);
         return AiChatResponseDTO.from(aiChat);
-
     }
+
+
+    // 2. 회원의 에셋 질문 조회
+    public List<AiChatResponseDTO> getChats(Long assetId, String uuid){
+
+        List<AiChat> aiChats = aiChatRepository.findAllByAsset_AssetIdAndUser_UuidOrderByCreatedAtDesc(assetId, uuid);
+
+        return aiChats.stream()
+                .map(AiChatResponseDTO::from)
+                .collect(Collectors.toUnmodifiableList());
+        }
+
+
+
 
     // 1. 에셋에 대한 context 생성하는 함수
     private String buildAssetContext(Asset asset) {
