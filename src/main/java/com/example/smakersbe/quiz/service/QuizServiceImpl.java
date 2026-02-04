@@ -96,19 +96,29 @@ public class QuizServiceImpl implements QuizService {
 
             // 풀지 않은 시험지가 2개 이하면 -> 비동기로 퀴즈 생성 요청
             long remainingCount = quizSetRepository.countByAssetAndQuizSetIdNotIn(asset, solvedQuizSetIds);
-            if (remainingCount <= 2) {
+            if (remainingCount <= 2 && !asset.isQuizCreating()) {
                 log.info("재고 부족(남은 개수: {})! 비동기로 퀴즈 생성을 시작합니다.", remainingCount);
-                // @Async가 붙은 메서드를 호출하거나 별도 스레드로 실행
+                // 퀴즈 생성 상태 바꿔주기
+                asset.updateQuizCreatingStatus(true);
+                assetRepository.save(asset);
+                // 비동기 호출
                 CompletableFuture.runAsync(() -> {
-                    createTestByAi(new QuizCreateByAiRequestDTO(asset.getAssetId(), finalMemoContext));
+                    try {
+                        createTestByAi(new QuizCreateByAiRequestDTO(asset.getAssetId(), finalMemoContext));
+                    } finally {
+                        // 퀴즈 생성하고 나면  false 로 바꿔주기
+                        Asset targetAsset = assetRepository.findById(asset.getAssetId()).orElseThrow();
+                        targetAsset.updateQuizCreatingStatus(false);
+                        assetRepository.save(targetAsset);
+                    }
                 });
             }
             return getExistingQuizItems(nextQuiz.getQuizSetId());
         }
-
-
-
     }
+
+    // 퀴즈 답안지 작성 서비스
+
 
     // options 파싱을 위한 메서드
     private List<String> parseOptions(String optionsJson) {
@@ -134,9 +144,15 @@ public class QuizServiceImpl implements QuizService {
 
         String aiQuizJson = aiGenerateService.getAiAnswer(
                 "너는 기계공학 퀴즈 생성 도우미. 반드시 JSON 배열 형식으로만 응답해. [{\"question\": \"...\", \"options\": [\"...\"], \"answer\": 0, \"explanation\": \"...\", \"hint\": \"...\"}]",
-                "이 정보를 바탕으로 퀴즈 4개를 만들어줘.\n" + "선지(options)는 각 퀴즈당 4개야 :\n" + "각 문제에 대한 힌트(hint)도 생성해줘",
+                "이 정보를 바탕으로 퀴즈 4개를 만들어줘.\n" + "선지(options)는 각 퀴즈당 4개야.\n" + "선지 번호(answer)은 골고루 섞어.\n" +"각 문제에 대한 힌트(hint)도 생성해줘",
                 5000,
                 context);
+
+        if (aiQuizJson == null || aiQuizJson.startsWith("현재")) {
+            log.error("AI 응답이 올바르지 않습니다: {}", aiQuizJson);
+            throw new RuntimeException("AI 서비스 응답 오류");
+        }
+
         String cleanedJson = aiQuizJson.replaceAll("```json|```", "").trim();   //json 부분 추출
 
         // objectMapper : ai에게 받은 String 을 json으로 변환
@@ -175,10 +191,9 @@ public class QuizServiceImpl implements QuizService {
     }
 
     private List<QuizCreateResponseDTO> getExistingQuizItems(Long quizSetId) {
-        // 1. quizSetId로 해당 시험지의 모든 문항(Item)을 가져옵니다.
+        // 1. quizSetId로 해당 시험지의 모든 문항(Item) 가져오기
         List<QuizSetItem> items = quizSetItemRepository.findAllByQuizSet_QuizSetId(quizSetId);
 
-        // 2. 엔티티 리스트를 DTO 리스트로 변환합니다.
         return items.stream().map(item -> QuizCreateResponseDTO.builder()
                         .quizSetId(quizSetId)
                         .assetId(item.getQuizSet().getAsset().getAssetId())

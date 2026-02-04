@@ -18,5 +18,6 @@ public interface QuizAttemptRepository extends JpaRepository<QuizAttempt, Long> 
             "WHERE qa.user = :user AND qa.quizSet.asset = :asset")
     Long findLastQuizSetIdByUserAndAsset(@Param("user") User user, @Param("asset") Asset asset);
 
-    List<Long> findQuizSetIdsByUserAndAsset(User user, Asset asset);
+    @Query("SELECT qa.quizSet.quizSetId FROM QuizAttempt qa WHERE qa.user = :user AND qa.quizSet.asset = :asset")
+    List<Long> findQuizSetIdsByUserAndAsset(@Param("user") User user, @Param("asset") Asset asset);
 }
