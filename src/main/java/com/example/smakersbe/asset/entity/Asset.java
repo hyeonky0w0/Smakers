@@ -24,7 +24,12 @@ public class Asset {
     @Column(name="asset_description",  columnDefinition = "TEXT", nullable = false)
     private String assetDescription;
 
-    @Column(name="asset_url", length = 1000, nullable = false)
-    private String assetUrl;
+    // 모델 썸네일(이미지)
+    @Column(name="asset_thumbnail_url", length = 1000, nullable = false)
+    private String assetThumbnailUrl;
+
+    // 전체 모델 GLB
+    @Column(name="asset_glb_url", length = 1000, nullable = false)
+    private String assetGlbUrl;
 
 }

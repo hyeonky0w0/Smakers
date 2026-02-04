@@ -40,7 +40,7 @@ public class AssetQueryService {
                         a.getAssetId(),
                         a.getAssetName(),
                         a.getAssetDescription(),
-                        a.getAssetUrl(),
+                        a.getAssetThumbnailUrl(),
                         lastAccessMap.get(a.getAssetId()) // 없으면 null
                 ))
                 .collect(Collectors.toList());

@@ -6,6 +6,6 @@ public record AssetThumbnailResponse(
         Long assetId,
         String assetName,
         String assetDescription,
-        String assetUrl,
+        String assetThumbnailUrl,
         LocalDateTime lastAccessedAt
 ) {}
