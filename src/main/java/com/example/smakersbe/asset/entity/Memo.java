@@ -41,4 +41,16 @@ public class Memo {
     @JoinColumn(name ="asset_id", nullable = false)
     private Asset asset;
 
+    //createdAt/updatedAt을 자동으로 세팅, 소프트 삭제 안전장치
+    @PrePersist
+    public void prePersist() {
+        this.createdAt = LocalDateTime.now();
+        this.updatedAt = LocalDateTime.now();
+    }
+
+    @PreUpdate
+    public void preUpdate() {
+        this.updatedAt = LocalDateTime.now();
+    }
+
 }
