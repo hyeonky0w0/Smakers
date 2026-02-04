@@ -19,7 +19,8 @@ public class User {
     @Column(name="user_id", nullable = false, updatable = false)
     private Long userId;
 
-    @Column(name="uuid", nullable = false)
+    //uuid 로 시별할거면 DB에서 중복을 막아야해서 중복 제약 조건 추가
+    @Column(name="uuid", nullable=false, unique=true, length=64)
     private String uuid;
 
     @Column(name="created_at", nullable = false)
