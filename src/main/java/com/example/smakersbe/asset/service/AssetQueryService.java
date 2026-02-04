@@ -1,6 +1,6 @@
 package com.example.smakersbe.asset.service;
 
-import com.example.smakersbe.asset.dto.AssetThumbnailResponse;
+import com.example.smakersbe.asset.dto.response.AssetThumbnailResponse;
 import com.example.smakersbe.asset.entity.Asset;
 import com.example.smakersbe.asset.entity.UserAsset;
 import com.example.smakersbe.asset.repository.AssetRepository;

@@ -1,4 +1,4 @@
-package com.example.smakersbe.asset.dto;
+package com.example.smakersbe.asset.dto.response;
 
 import java.time.LocalDateTime;
 
