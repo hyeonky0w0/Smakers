@@ -27,4 +27,9 @@ public class Edge {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "end_node_id", nullable = false)
     private Node endNode;
+
+    // 클라이언트 엣지 아이디
+    @Column(name="client_edge_id", nullable = false, unique=true, length = 100)
+    private String clientEdgeId;
+
 }

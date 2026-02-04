@@ -35,6 +35,11 @@ public class Node {
     @JoinColumn(name ="workflow_id", nullable = false)
     private WorkFlow workFlow;
 
+    //클라이언트 노드 아이디
+    @Column(name="client_node_id", nullable = false, unique=true, length = 100)
+    private String clientNodeId;
+
+
 
 
 

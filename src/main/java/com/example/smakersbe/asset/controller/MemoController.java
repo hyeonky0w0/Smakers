@@ -76,6 +76,8 @@ public class MemoController {
         return memoService.updateMemo(assetId, memoId, req);
     }
 
+
+    //일단 hard_delete로 구현 후 나중에 휴지통등 기능 생기면 deleted_at 추가로 사용
     @Operation(
             summary = "스터디 메모 삭제(소프트 삭제)",
             description = "memoId의 메모를 deletedAt=now 로 처리합니다. (DB에서 실제 delete 아님)"
