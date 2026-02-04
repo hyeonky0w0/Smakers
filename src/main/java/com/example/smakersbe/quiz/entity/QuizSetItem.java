@@ -35,6 +35,8 @@ public class QuizSetItem {
     private String hint;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name ="asset_id", nullable = false)
-    private Asset asset;
+    @JoinColumn(name ="quiz_set_id", nullable = false)
+        private QuizSet quizSet;
+
+
 }
