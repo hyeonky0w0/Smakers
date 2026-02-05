@@ -30,6 +30,10 @@ public class QuizUserAnswer {
     private LocalDateTime createdAt;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name ="quiz_set_item_id", nullable = false)
+    private QuizSetItem quizSetItem;
+
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name ="quiz_attempt_id", nullable = false)
     private QuizAttempt quizAttempt;
 }

@@ -4,14 +4,13 @@ import com.example.smakersbe.ai.service.AiGenerateService;
 import com.example.smakersbe.asset.entity.Asset;
 import com.example.smakersbe.asset.entity.Memo;
 import com.example.smakersbe.asset.repository.AssetRepository;
+import com.example.smakersbe.quiz.dto.request.QuizAttemptRequestDTO;
 import com.example.smakersbe.quiz.dto.request.QuizCreateByAiRequestDTO;
 import com.example.smakersbe.quiz.dto.request.QuizCreateRequestDTO;
+import com.example.smakersbe.quiz.dto.response.QuizAttemptResponseDTO;
 import com.example.smakersbe.quiz.dto.response.QuizCreateResponseDTO;
-import com.example.smakersbe.quiz.entity.QuizSet;
-import com.example.smakersbe.quiz.entity.QuizSetItem;
-import com.example.smakersbe.quiz.repository.QuizAttemptRepository;
-import com.example.smakersbe.quiz.repository.QuizSetItemRepository;
-import com.example.smakersbe.quiz.repository.QuizSetRepository;
+import com.example.smakersbe.quiz.entity.*;
+import com.example.smakersbe.quiz.repository.*;
 import com.example.smakersbe.user.entity.User;
 import com.example.smakersbe.user.repository.UserRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -22,6 +21,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -41,6 +43,8 @@ public class QuizServiceImpl implements QuizService {
     private final UserRepository userRepository;
     private final QuizAttemptRepository quizAttemptRepository;
     private final MemoRepository memoRepository;
+    private final QuizUserAnswerRepository quizUserAnswerRepository;
+    private final QuizResultRepository quizResultRepository;
 
     // 1. 퀴즈 생성 요청 서비스
     /* 사용자가 만약 풀었던 시험를 다시 풀고싶다면 -> quiz_set_id 값 함께 전달
@@ -64,7 +68,7 @@ public class QuizServiceImpl implements QuizService {
             // 시험지 id가 있으면
             Long quizSetId = requestDTO.getQuizSetId();
             // 시험지 정보 반환하기
-            List<QuizSetItem> items = quizSetRepository.findAllByQuizSetId(quizSetId);
+            List<QuizSetItem> items = quizSetItemRepository.findAllByQuizSetId(quizSetId);
 
             return items.stream().map(item -> QuizCreateResponseDTO.builder()
                             .quizSetId(quizSetId)
@@ -117,7 +121,61 @@ public class QuizServiceImpl implements QuizService {
         }
     }
 
-    // 퀴즈 답안지 작성 서비스
+    // 2. 퀴즈 답안지 작성 및 등록 서비스
+    /* 유저가 답을 제출하면 -> 그 결과를 QuizUserAnswer, QuizAttempt에 저장 -> 내부 로직에 의해 채점
+    -> 그 결과가 QuizResult에 저장 (이때 aiReview는 기본값) -> 이후 ai 리뷰 보기 클릭하면 -> aiReview 값 업데이트 */
+    public QuizAttemptResponseDTO createQuizAttempt(QuizAttemptRequestDTO requestDTO){
+
+        // 유저 및 퀴즈 세트 조회
+        User user = userRepository.findByUuid(requestDTO.getUuid())
+                .orElseThrow(() -> new RuntimeException("유저를 찾을 수 없습니다."));
+        QuizSet quizSet = quizSetRepository.findById(requestDTO.getQuizSetId())
+                .orElseThrow(() -> new RuntimeException("퀴즈 세트를 찾을 수 없습니다."));
+
+        // QuizAttempt에 저장
+        QuizAttempt quizAttempt = QuizAttempt.builder()
+                . user(user)
+                .quizSet(quizSet).build();
+        quizAttemptRepository.save(quizAttempt);
+
+        // 채점 + QuizUserAnswer 저장
+        long correctCount = 0;
+        List<QuizUserAnswer> userAnswers = new ArrayList<>();
+
+        for (QuizAttemptRequestDTO.UserAnswerDTO answerDTO : requestDTO.getAnswers()){
+            QuizSetItem quizSetItem = quizSetItemRepository.findById(answerDTO.getQuizSetItemId())
+                    .orElseThrow(() -> new RuntimeException("문제를 찾을 수 없습니다."));
+
+            // 채점
+            boolean isCorrect = quizSetItem.getAnswer().equals(answerDTO.getUserChoice());
+            if(isCorrect) correctCount++;
+
+            // 결과 저장
+            QuizUserAnswer quizUserAnswer = QuizUserAnswer.builder()
+                    .userChoice(answerDTO.getUserChoice())
+                    .isCorrect(isCorrect)
+                    .createdAt(LocalDateTime.now())
+                    .quizAttempt(quizAttempt).
+                    quizSetItem(quizSetItem).build();
+            userAnswers.add(quizUserAnswer);
+        }
+        quizUserAnswerRepository.saveAll(userAnswers);
+
+        // QuizResult 저장
+        QuizResult quizResult = QuizResult.builder()
+                .quizAttempt(quizAttempt)
+                .score((correctCount * 100) / requestDTO.getAnswers().size())
+                .totalCount((long)requestDTO.getAnswers().size())
+                .correctCount(correctCount)
+                .createdAt(LocalDateTime.now())
+                .aiReview("AI 분석을 요청해주세요.")
+                .build();
+        quizResultRepository.save(quizResult);
+
+        // response
+        return QuizAttemptResponseDTO.from(quizAttempt, userAnswers, quizResult);
+
+    }
 
 
     // options 파싱을 위한 메서드
@@ -192,7 +250,7 @@ public class QuizServiceImpl implements QuizService {
 
     private List<QuizCreateResponseDTO> getExistingQuizItems(Long quizSetId) {
         // 1. quizSetId로 해당 시험지의 모든 문항(Item) 가져오기
-        List<QuizSetItem> items = quizSetItemRepository.findAllByQuizSet_QuizSetId(quizSetId);
+        List<QuizSetItem> items = quizSetItemRepository.findAllByQuizSetId(quizSetId);
 
         return items.stream().map(item -> QuizCreateResponseDTO.builder()
                         .quizSetId(quizSetId)

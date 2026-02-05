@@ -1,7 +1,9 @@
 package com.example.smakersbe.quiz.controller;
 
+import com.example.smakersbe.quiz.dto.request.QuizAttemptRequestDTO;
 import com.example.smakersbe.quiz.dto.request.QuizCreateRequestDTO;
 import com.example.smakersbe.quiz.dto.response.QuizCreateResponseDTO;
+import com.example.smakersbe.quiz.dto.response.QuizAttemptResponseDTO;
 import com.example.smakersbe.quiz.service.QuizService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,9 +27,17 @@ public class QuizController {
     public ResponseEntity<List<QuizCreateResponseDTO>> createQuiz(@RequestBody QuizCreateRequestDTO requestDTO) {
         log.info("퀴즈 생성/조회 요청: user={}, asset={}", requestDTO.getUuid(), requestDTO.getAssetId());
 
-        List<QuizCreateResponseDTO> quizList = quizService.createQuiz(requestDTO);
+        List<QuizCreateResponseDTO> response = quizService.createQuiz(requestDTO);
 
-        return ResponseEntity.ok(quizList);
+        return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/attempts")
+    public ResponseEntity<QuizAttemptResponseDTO> createQuizAttempt(@RequestBody QuizAttemptRequestDTO requestDTO) {
+        log.info("퀴즈 결과 저장 요청 중");
+
+        QuizAttemptResponseDTO response = quizService.createQuizAttempt(requestDTO);
+        return ResponseEntity.ok(response);
     }
 
 

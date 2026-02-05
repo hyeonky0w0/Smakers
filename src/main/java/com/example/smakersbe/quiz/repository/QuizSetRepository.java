@@ -11,8 +11,6 @@ import java.util.Optional;
 
 @Repository
 public interface QuizSetRepository extends JpaRepository<QuizSet, Long> {
-    // 푼 시험지 목록 조회
-    List<QuizSetItem> findAllByQuizSetId(Long quizSetId);
 
     // 가장 오래된 풀지 않은 시험지 조회
     Optional<QuizSet> findFirstByAssetAndQuizSetIdNotInOrderByQuizSetIdAsc(Asset asset, List<Long> solvedQuizSetIds);
