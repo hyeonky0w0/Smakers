@@ -1,7 +1,9 @@
 package com.example.smakersbe.quiz.controller;
 
+import com.example.smakersbe.quiz.dto.request.QuizAiAnalysisRequestDTO;
 import com.example.smakersbe.quiz.dto.request.QuizAttemptRequestDTO;
 import com.example.smakersbe.quiz.dto.request.QuizCreateRequestDTO;
+import com.example.smakersbe.quiz.dto.response.QuizAiAnalysisResponseDTO;
 import com.example.smakersbe.quiz.dto.response.QuizCreateResponseDTO;
 import com.example.smakersbe.quiz.dto.response.QuizAttemptResponseDTO;
 import com.example.smakersbe.quiz.service.QuizService;
@@ -37,6 +39,15 @@ public class QuizController {
         log.info("퀴즈 결과 저장 요청 중");
 
         QuizAttemptResponseDTO response = quizService.createQuizAttempt(requestDTO);
+        return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/ai-analysis")
+    public ResponseEntity<QuizAiAnalysisResponseDTO> createQuizAiAnalyze(
+            @RequestBody QuizAiAnalysisRequestDTO requestDTO) {
+        log.info("퀴즈 결과 ai 분석 요청 중");
+
+        QuizAiAnalysisResponseDTO response = quizService.createQuizAiAnalyze(requestDTO);
         return ResponseEntity.ok(response);
     }
 

@@ -3,6 +3,8 @@ package com.example.smakersbe.ai.service;
 import com.example.smakersbe.asset.entity.Asset;
 import com.example.smakersbe.asset.entity.Part;
 import com.example.smakersbe.asset.repository.AssetPartRepository;
+import com.example.smakersbe.quiz.entity.QuizSetItem;
+import com.example.smakersbe.quiz.entity.QuizUserAnswer;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.json.JSONArray;
@@ -38,7 +40,7 @@ public class AiGenerateService {
             // 1. 헤더 설정
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
-            headers.setBearerAuth(apiKey); // @Value("${openai.api.key}")로 받은 키
+            headers.setBearerAuth(apiKey);
 
             //cf) 종료 시간 기록 및 계산 (성능 개선)
             long startTime = System.currentTimeMillis();
@@ -146,6 +148,33 @@ public class AiGenerateService {
             sb.append("- 추가된 메모가 없습니다. 에셋 정보를 바탕으로 퀴즈를 생성하세요.\n");
         } else {
             sb.append(userNotes).append("\n");
+        }
+
+        return sb.toString();
+    }
+
+    // 퀴즈 생성을 위한 문맥 생성 함수 (오버로딩)
+    public String buildAssetContext(List<QuizUserAnswer> wrongAnswers) {
+        if (wrongAnswers == null || wrongAnswers.isEmpty()) {
+            return "모든 문제를 맞히셨습니다! 분석할 오답이 없습니다.";
+        }
+
+        StringBuilder sb = new StringBuilder();
+        sb.append("### 사용자의 오답 분석 데이터 ###\n");
+
+        // 첫 번째 데이터에서 에셋 정보를 가져와서 상단에 표시 (옵션)
+        Asset asset = wrongAnswers.get(0).getQuizSetItem().getQuizSet().getAsset();
+        sb.append("대상 에셋: ").append(asset.getAssetName()).append("\n\n");
+
+        for (int i = 0; i < wrongAnswers.size(); i++) {
+            QuizUserAnswer ua = wrongAnswers.get(i);
+            QuizSetItem item = ua.getQuizSetItem();
+
+            sb.append(i + 1).append(". 틀린 문제 정보\n");
+            sb.append("   - 질문: ").append(item.getQuestion()).append("\n");
+            sb.append("   - 정답 번호: ").append(item.getAnswer()).append("\n");
+            sb.append("   - 사용자가 선택한 번호: ").append(ua.getUserChoice()).append("\n");
+            sb.append("   - 정답 해설: ").append(item.getExplanation()).append("\n\n");
         }
 
         return sb.toString();

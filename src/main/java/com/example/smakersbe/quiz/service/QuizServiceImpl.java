@@ -4,9 +4,11 @@ import com.example.smakersbe.ai.service.AiGenerateService;
 import com.example.smakersbe.asset.entity.Asset;
 import com.example.smakersbe.asset.entity.Memo;
 import com.example.smakersbe.asset.repository.AssetRepository;
+import com.example.smakersbe.quiz.dto.request.QuizAiAnalysisRequestDTO;
 import com.example.smakersbe.quiz.dto.request.QuizAttemptRequestDTO;
 import com.example.smakersbe.quiz.dto.request.QuizCreateByAiRequestDTO;
 import com.example.smakersbe.quiz.dto.request.QuizCreateRequestDTO;
+import com.example.smakersbe.quiz.dto.response.QuizAiAnalysisResponseDTO;
 import com.example.smakersbe.quiz.dto.response.QuizAttemptResponseDTO;
 import com.example.smakersbe.quiz.dto.response.QuizCreateResponseDTO;
 import com.example.smakersbe.quiz.entity.*;
@@ -174,6 +176,49 @@ public class QuizServiceImpl implements QuizService {
 
         // response
         return QuizAttemptResponseDTO.from(quizAttempt, userAnswers, quizResult);
+
+    }
+
+    // 3. quiz 에 대한 ai 분석 요청
+    /* 사용자의 quizAttemptId 데이터를 전송 -> QuizUserAnswer에서 quizAttemptId와 일치하고, isCorrect가 false인 데이터 전송 (quizSetItem과 조인)
+    -> Ai 문맥 만들어서 -> AI의 분석 제공
+     */
+    public QuizAiAnalysisResponseDTO createQuizAiAnalyze(QuizAiAnalysisRequestDTO requestDTO){
+
+        QuizAttempt attempt = quizAttemptRepository.findById(requestDTO.getQuizAttemptId())
+                .orElseThrow(() -> new EntityNotFoundException("퀴즈 시도 이력을 찾을 수 없습니다."));
+
+        if (!attempt.getUser().getUuid().equals(requestDTO.getUuid())) {
+            throw new IllegalArgumentException("해당 퀴즈 기록에 접근할 권한이 없습니다.");
+        }
+
+        // 유저가 틀린 문제 + 답안 가져오기
+        List<QuizUserAnswer> wrongAnswers = quizUserAnswerRepository
+                .findWrongAnswersWithItemByAttemptId(requestDTO.getQuizAttemptId());
+
+        // 문맥 만들기
+        String context = aiGenerateService.buildAssetContext(wrongAnswers);
+
+        // 프롬프트
+        String getAiAnswer = aiGenerateService.getAiAnswer(
+                "너는 시험 분석 및 조언 전문가. \n"+
+                        "1. 말투: 친절한 선배나 멘토처럼 (~해요, ~입니다)\n"+
+                        "구조: [총평], [핵심 오답 분석], [향후 학습 가이드] 세 부분으로 나눌 것.\n"+
+                        "분석 포인트: 유저가 선택한 오답과 정답을 비교하여 오개념을 정확히 짚어줄 것.\n"+
+                        "제한: 너무 길지 않게, 핵심 위주로 500자 이내로 작성해줘.",
+                "이게 사용자가 틀린 문제 정보야.\n",
+                2000,
+                context);
+
+        // 기존의 result 데이터 가져오기
+        QuizResult quizResult = quizResultRepository.findByQuizAttempt(attempt)
+                .orElseGet(() -> QuizResult.builder().quizAttempt(attempt).build());
+
+        quizResult.setAiReview(getAiAnswer);
+        quizResultRepository.save(quizResult);
+
+        log.info("성공적으로 AI 리뷰가 저장되었습니다. 받아온 답변: {}, Attempt ID: {}", getAiAnswer,attempt.getQuizAttemptId());
+        return QuizAiAnalysisResponseDTO.from(quizResult);
 
     }
 
