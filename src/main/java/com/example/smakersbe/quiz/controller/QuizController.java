@@ -6,14 +6,12 @@ import com.example.smakersbe.quiz.dto.request.QuizCreateRequestDTO;
 import com.example.smakersbe.quiz.dto.response.QuizAiAnalysisResponseDTO;
 import com.example.smakersbe.quiz.dto.response.QuizCreateResponseDTO;
 import com.example.smakersbe.quiz.dto.response.QuizAttemptResponseDTO;
+import com.example.smakersbe.quiz.dto.response.QuizHistoryResponseDTO;
 import com.example.smakersbe.quiz.service.QuizService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -48,6 +46,17 @@ public class QuizController {
         log.info("퀴즈 결과 ai 분석 요청 중");
 
         QuizAiAnalysisResponseDTO response = quizService.createQuizAiAnalyze(requestDTO);
+        return ResponseEntity.ok(response);
+    }
+
+    // 사용자의 특정에셋에 대한 퀴즈 이력 조회
+    @GetMapping("/my/history")
+    public ResponseEntity<List<QuizHistoryResponseDTO>> fetchMyQuizHistory(
+            @RequestParam("uuid") String uuid,
+            @RequestParam("assetId") Long assetId
+            ) {
+
+        List<QuizHistoryResponseDTO> response = quizService.fetchMyQuizHistory(uuid, assetId);
         return ResponseEntity.ok(response);
     }
 

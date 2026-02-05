@@ -7,6 +7,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Table(name = "quiz_attempts")
 @Data
@@ -19,6 +21,14 @@ public class QuizAttempt {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="quiz_attempt_id", nullable = false, updatable = false)
     private Long quizAttemptId;
+
+    @Column(name = "created_at", nullable = false, updatable = false)
+    private LocalDateTime createdAt;
+
+    @PrePersist
+    protected void onCreate() {
+        this.createdAt = LocalDateTime.now();
+    }
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name ="quiz_set_id", nullable = false)

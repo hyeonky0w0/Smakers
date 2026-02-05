@@ -20,4 +20,12 @@ public interface QuizAttemptRepository extends JpaRepository<QuizAttempt, Long> 
 
     @Query("SELECT qa.quizSet.quizSetId FROM QuizAttempt qa WHERE qa.user = :user AND qa.quizSet.asset = :asset")
     List<Long> findQuizSetIdsByUserAndAsset(@Param("user") User user, @Param("asset") Asset asset);
+
+    @Query("SELECT qa FROM QuizAttempt qa " +
+            "JOIN qa.quizSet qs " +
+            "JOIN qs.asset a " +
+            "WHERE qa.user.uuid = :uuid AND a.assetId = :assetId " +
+            "ORDER BY qa.quizAttemptId DESC")
+    List<QuizAttempt> findAllByUuidAndAssetId(@Param("uuid") String uuid, @Param("assetId") Long assetId);
+
 }

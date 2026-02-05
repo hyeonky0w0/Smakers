@@ -33,6 +33,11 @@ public class QuizResult {
     @Column(name="created_at", nullable = false)
     private LocalDateTime createdAt;
 
+    @PrePersist
+    protected void onCreate() {
+        this.createdAt = LocalDateTime.now();
+    }
+
     @Column(name="ai_review", columnDefinition = "TEXT", nullable = false)
     private String aiReview;
 
