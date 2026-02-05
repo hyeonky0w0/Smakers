@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="user_id", nullable = false, updatable = false)
+    @Column(name="user_id", nullable = false, updatable = false, unique = true)
     private Long userId;
 
     //uuid 로 시별할거면 DB에서 중복을 막아야해서 중복 제약 조건 추가
