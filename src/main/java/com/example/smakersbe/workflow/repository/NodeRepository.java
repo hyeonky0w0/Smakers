@@ -9,5 +9,11 @@ import java.util.Optional;
 public interface NodeRepository extends JpaRepository<Node, Long> {
     List<Node> findAllByWorkFlow_WorkflowId(Long workflowId);
     void deleteAllByWorkFlow_WorkflowId(Long workflowId);
-    Optional<Node> findByWorkFlow_WorkflowIdAndClientNodeId(Long workflowId, String clientNodeId);
+
+    Optional<Node> findByNodeIdAndWorkFlow_User_UserId(Long nodeId, Long userId);
+    Optional<Node> findByWorkFlow_WorkflowIdAndClientNodeId(
+            Long workflowId,
+            String clientNodeId
+    );
+
 }
