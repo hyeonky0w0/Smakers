@@ -54,6 +54,16 @@ public class Part {
     @Column(name="exploded_z", nullable = false)
     private double explodedZ;
 
+    // ✅ 회전값 (기본 0,0,0)
+    @Embedded
+    @AttributeOverrides({
+            @AttributeOverride(name = "x", column = @Column(name="rotation_x", nullable = false)),
+            @AttributeOverride(name = "y", column = @Column(name="rotation_y", nullable = false)),
+            @AttributeOverride(name = "z", column = @Column(name="rotation_z", nullable = false))
+    })
+    @Builder.Default
+    private Vec3 rotation = new Vec3(0, 0, 0);
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name ="asset_id", nullable = false)
     private Asset asset;

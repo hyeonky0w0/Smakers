@@ -1,12 +1,15 @@
 package com.example.smakersbe.asset.service;
 
 import com.example.smakersbe.asset.dto.response.PartDetailResponse;
+import com.example.smakersbe.asset.dto.response.PartThumbnailResponse;
 import com.example.smakersbe.asset.entity.Part;
 
 import com.example.smakersbe.asset.repository.PartRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -28,6 +31,23 @@ public class PartService {
                 .partThumbnailUrl(part.getPartThumbnailUrl())
                 .partDescription(part.getPartDescription())
                 .material(part.getMaterial())
+                .rotation(PartDetailResponse.Rotation.builder()
+                        .x(part.getRotation().getX())
+                        .y(part.getRotation().getY())
+                        .z(part.getRotation().getZ())
+                        .build())
                 .build();
     }
+    // ✅ 추가: 파츠 썸네일 리스트
+    @Transactional(readOnly = true)
+    public List<PartThumbnailResponse> getPartThumbnails(Long assetId) {
+        return partRepository.findByAsset_AssetIdOrderByPartIdAsc(assetId).stream()
+                .map(p -> PartThumbnailResponse.builder()
+                        .partId(p.getPartId())
+                        .partName(p.getPartName())
+                        .partThumbnailUrl(p.getPartThumbnailUrl())
+                        .build())
+                .toList();
+    }
+
 }

@@ -32,12 +32,16 @@ public class AssetDetailService {
                         p.getPartName(),
                         p.getPartDescription(),
                         p.getPartThumbnailUrl(),
+                        p.getPartGlbUrl(),
                         p.getMaterial(),
                         new AssetDetailResponse.Position(
                                 p.getAssembledX(), p.getAssembledY(), p.getAssembledZ()
                         ),
                         new AssetDetailResponse.Position(
                                 p.getExplodedX(), p.getExplodedY(), p.getExplodedZ()
+                        ),
+                        new AssetDetailResponse.Position(
+                                p.getRotation().getX(), p.getRotation().getY(), p.getRotation().getZ()
                         )
                 ))
                 .toList();
@@ -46,7 +50,6 @@ public class AssetDetailService {
                 asset.getAssetId(),
                 asset.getAssetName(),
                 asset.getAssetDescription(),
-                asset.getAssetGlbUrl(),
                 partItems
         );
     }
