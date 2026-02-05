@@ -7,7 +7,8 @@ import java.util.List;
 import java.util.Optional;
 
 public interface WorkFlowRepository extends JpaRepository<WorkFlow, Long> {
-    List<WorkFlow> findAllByUser_UserIdOrderByUpdatedAtDesc(Long userId);
+    List<WorkFlow> findAllByUser_UserIdOrderByUpdatedAtDesc(Long userId); //업데이트 순 정렬
+
     Optional<WorkFlow> findByWorkflowIdAndUser_UserId(Long workflowId, Long userId);
 }
 

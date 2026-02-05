@@ -30,11 +30,18 @@ public class WorkFlowService {
     private final EdgeRepository edgeRepository;
 
     public List<WorkFlowListItemResponse> list(Long userId) {
-        return workFlowRepository.findAllByUser_UserIdOrderByUpdatedAtDesc(userId)
+        return workFlowRepository.findAllByUser_UserIdOrderByUpdatedAtDesc(userId) // 정렬 기준 변경
                 .stream()
-                .map(w -> new WorkFlowListItemResponse(w.getWorkflowId(), w.getWorkflowName(), w.getUpdatedAt()))
+                .map(w -> new WorkFlowListItemResponse(
+                        w.getWorkflowId(),
+                        w.getWorkflowName(),
+                        w.getSchemaVersion(),
+                        w.getCreatedAt(),
+                        w.getUpdatedAt()
+                ))
                 .toList();
     }
+
 
     public WorkFlowDetailResponse detail(Long userId, Long workflowId) {
         WorkFlow wf = workFlowRepository.findByWorkflowIdAndUser_UserId(workflowId, userId)
@@ -105,7 +112,6 @@ public class WorkFlowService {
 
         // ✅ revision 충돌 방지 (Optimistic lock처럼 동작)
         if (req.revision() == null || !req.revision().equals(wf.getRevision())) {
-            // 409 CONFLICT로 내려주는 게 보통
             throw new IllegalStateException("Revision conflict");
         }
 
@@ -137,6 +143,10 @@ public class WorkFlowService {
         edgeRepository.deleteAllByStartNode_WorkFlow_WorkflowId(workflowId);
         nodeRepository.deleteAllByWorkFlow_WorkflowId(workflowId);
 
+        // ✅ delete를 DB에 먼저 반영
+        edgeRepository.flush();
+        nodeRepository.flush();
+
         // 1) nodes insert
         Map<String, Node> nodeMap = new HashMap<>();
         for (var n : data.nodes()) {
@@ -160,6 +170,7 @@ public class WorkFlowService {
                 throw new IllegalArgumentException("Edge references missing node: " + e.id());
             }
             Edge edge = Edge.builder()
+                    .workFlow(wf)
                     .clientEdgeId(e.id())
                     .startNode(start)
                     .endNode(end)
