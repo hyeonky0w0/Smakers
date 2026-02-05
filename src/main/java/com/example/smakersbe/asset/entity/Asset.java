@@ -32,4 +32,12 @@ public class Asset {
     @Column(name="asset_glb_url", length = 1000, nullable = false)
     private String assetGlbUrl;
 
+    // 퀴즈 생성 여부
+    @Column(nullable = false)
+    private boolean isQuizCreating = false;
+    // 퀴즈 생성하면 true -> false 로 상태 바꾸기
+    public void updateQuizCreatingStatus(boolean status) {
+        this.isQuizCreating = status;
+    }
+
 }
