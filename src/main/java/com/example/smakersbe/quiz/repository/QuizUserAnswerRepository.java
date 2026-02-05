@@ -1,5 +1,6 @@
 package com.example.smakersbe.quiz.repository;
 
+import com.example.smakersbe.quiz.entity.QuizAttempt;
 import com.example.smakersbe.quiz.entity.QuizUserAnswer;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -16,4 +17,8 @@ public interface QuizUserAnswerRepository extends JpaRepository<QuizUserAnswer, 
             "JOIN FETCH ua.quizSetItem " +
             "WHERE ua.quizAttempt.quizAttemptId = :attemptId AND ua.isCorrect = false")
     List<QuizUserAnswer> findWrongAnswersWithItemByAttemptId(@Param("attemptId") Long attemptId);
+
+    List<QuizUserAnswer> findAllByQuizAttempt(QuizAttempt quizAttempt);
+
+
 }

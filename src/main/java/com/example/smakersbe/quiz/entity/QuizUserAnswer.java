@@ -29,6 +29,11 @@ public class QuizUserAnswer {
     @Column(name="created_at", nullable = false)
     private LocalDateTime createdAt;
 
+    @PrePersist
+    protected void onCreate() {
+        this.createdAt = LocalDateTime.now();
+    }
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name ="quiz_set_item_id", nullable = false)
     private QuizSetItem quizSetItem;

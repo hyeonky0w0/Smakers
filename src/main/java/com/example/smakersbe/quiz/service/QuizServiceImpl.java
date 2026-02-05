@@ -11,6 +11,7 @@ import com.example.smakersbe.quiz.dto.request.QuizCreateRequestDTO;
 import com.example.smakersbe.quiz.dto.response.QuizAiAnalysisResponseDTO;
 import com.example.smakersbe.quiz.dto.response.QuizAttemptResponseDTO;
 import com.example.smakersbe.quiz.dto.response.QuizCreateResponseDTO;
+import com.example.smakersbe.quiz.dto.response.QuizHistoryResponseDTO;
 import com.example.smakersbe.quiz.entity.*;
 import com.example.smakersbe.quiz.repository.*;
 import com.example.smakersbe.user.entity.User;
@@ -53,6 +54,7 @@ public class QuizServiceImpl implements QuizService {
         처음 시행하는 시험(퀴즈 세트)라면 -> quiz_set_id 값에 Null 전달
      */
     /* 퀴즈 생성 요청이 들어오면 -> 퀴즈 생성 중인 컬럼을 true로 변경 */
+    @Transactional
     public List<QuizCreateResponseDTO> createQuiz(QuizCreateRequestDTO requestDTO){
 
         User user = userRepository.findByUuid(requestDTO.getUuid()).orElseThrow();
@@ -156,7 +158,6 @@ public class QuizServiceImpl implements QuizService {
             QuizUserAnswer quizUserAnswer = QuizUserAnswer.builder()
                     .userChoice(answerDTO.getUserChoice())
                     .isCorrect(isCorrect)
-                    .createdAt(LocalDateTime.now())
                     .quizAttempt(quizAttempt).
                     quizSetItem(quizSetItem).build();
             userAnswers.add(quizUserAnswer);
@@ -169,7 +170,6 @@ public class QuizServiceImpl implements QuizService {
                 .score((correctCount * 100) / requestDTO.getAnswers().size())
                 .totalCount((long)requestDTO.getAnswers().size())
                 .correctCount(correctCount)
-                .createdAt(LocalDateTime.now())
                 .aiReview("AI 분석을 요청해주세요.")
                 .build();
         quizResultRepository.save(quizResult);
@@ -201,7 +201,7 @@ public class QuizServiceImpl implements QuizService {
 
         // 프롬프트
         String getAiAnswer = aiGenerateService.getAiAnswer(
-                "너는 시험 분석 및 조언 전문가. \n"+
+                "너는 시험 분석 및 조언 전문가.\n"+
                         "1. 말투: 친절한 선배나 멘토처럼 (~해요, ~입니다)\n"+
                         "구조: [총평], [핵심 오답 분석], [향후 학습 가이드] 세 부분으로 나눌 것.\n"+
                         "분석 포인트: 유저가 선택한 오답과 정답을 비교하여 오개념을 정확히 짚어줄 것.\n"+
@@ -221,6 +221,26 @@ public class QuizServiceImpl implements QuizService {
         return QuizAiAnalysisResponseDTO.from(quizResult);
 
     }
+
+    // 4. 특정 에셋에 대한 사용자의 퀴즈 히스토리 조회
+    public List<QuizHistoryResponseDTO> fetchMyQuizHistory(String uuid, Long assetId){
+        List<QuizAttempt> quizAttempts = quizAttemptRepository.findAllByUuidAndAssetId(uuid, assetId);
+
+        return quizAttempts.stream()
+                .map(attempt -> {
+                    QuizResult result = quizResultRepository.findByQuizAttempt(attempt).orElse(null);
+
+                    List<QuizUserAnswer> allAnswers = quizUserAnswerRepository.findAllByQuizAttempt(attempt);
+                    List<QuizUserAnswer> wrongAnswers = allAnswers.stream() //전체 데이터 중
+                            .filter(answer -> !answer.getIsCorrect()) // 틀린 것만 필터링
+                            .toList();
+
+                    return QuizHistoryResponseDTO.from(attempt, result, wrongAnswers);
+                })
+                .toList();
+
+    }
+
 
 
     // options 파싱을 위한 메서드
