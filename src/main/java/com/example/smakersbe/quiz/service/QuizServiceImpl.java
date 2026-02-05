@@ -3,15 +3,14 @@ package com.example.smakersbe.quiz.service;
 import com.example.smakersbe.ai.service.AiGenerateService;
 import com.example.smakersbe.asset.entity.Asset;
 import com.example.smakersbe.asset.entity.Memo;
+import com.example.smakersbe.asset.entity.UserAsset;
 import com.example.smakersbe.asset.repository.AssetRepository;
+import com.example.smakersbe.asset.repository.UserAssetRepository;
 import com.example.smakersbe.quiz.dto.request.QuizAiAnalysisRequestDTO;
 import com.example.smakersbe.quiz.dto.request.QuizAttemptRequestDTO;
 import com.example.smakersbe.quiz.dto.request.QuizCreateByAiRequestDTO;
 import com.example.smakersbe.quiz.dto.request.QuizCreateRequestDTO;
-import com.example.smakersbe.quiz.dto.response.QuizAiAnalysisResponseDTO;
-import com.example.smakersbe.quiz.dto.response.QuizAttemptResponseDTO;
-import com.example.smakersbe.quiz.dto.response.QuizCreateResponseDTO;
-import com.example.smakersbe.quiz.dto.response.QuizHistoryResponseDTO;
+import com.example.smakersbe.quiz.dto.response.*;
 import com.example.smakersbe.quiz.entity.*;
 import com.example.smakersbe.quiz.repository.*;
 import com.example.smakersbe.user.entity.User;
@@ -48,6 +47,7 @@ public class QuizServiceImpl implements QuizService {
     private final MemoRepository memoRepository;
     private final QuizUserAnswerRepository quizUserAnswerRepository;
     private final QuizResultRepository quizResultRepository;
+    private final UserAssetRepository userAssetRepository;
 
     // 1. 퀴즈 생성 요청 서비스
     /* 사용자가 만약 풀었던 시험를 다시 풀고싶다면 -> quiz_set_id 값 함께 전달
@@ -176,7 +176,6 @@ public class QuizServiceImpl implements QuizService {
 
         // response
         return QuizAttemptResponseDTO.from(quizAttempt, userAnswers, quizResult);
-
     }
 
     // 3. quiz 에 대한 ai 분석 요청
@@ -219,7 +218,6 @@ public class QuizServiceImpl implements QuizService {
 
         log.info("성공적으로 AI 리뷰가 저장되었습니다. 받아온 답변: {}, Attempt ID: {}", getAiAnswer,attempt.getQuizAttemptId());
         return QuizAiAnalysisResponseDTO.from(quizResult);
-
     }
 
     // 4. 특정 에셋에 대한 사용자의 퀴즈 히스토리 조회
@@ -238,10 +236,21 @@ public class QuizServiceImpl implements QuizService {
                     return QuizHistoryResponseDTO.from(attempt, result, wrongAnswers);
                 })
                 .toList();
-
     }
 
+    // 5. 사용자가 학습했던 에셋에 대해서만 퀴즈 썸네일 반환
+    // userAsset 테이블에 있는 assetId을 가지고 -> asset의 assetName, assetThumbnailUrl 반환
+    public List<QuizzableAssetListResponseDTO> fetchMyQuizzableAssets(String uuid){
+        List<UserAsset> assets = userAssetRepository.findAllByUserUuidFetchAsset(uuid);
 
+        return assets.stream()
+                .map(ua -> QuizzableAssetListResponseDTO.builder()
+                        .assetId(String.valueOf(ua.getAsset().getAssetId()))
+                        .assetName(ua.getAsset().getAssetName())
+                        .assetThumbnailUrl(ua.getAsset().getAssetThumbnailUrl())
+                        .build())
+                .toList();
+    }
 
     // options 파싱을 위한 메서드
     private List<String> parseOptions(String optionsJson) {
@@ -329,7 +338,5 @@ public class QuizServiceImpl implements QuizService {
                         .build())
                 .collect(Collectors.toList());
     }
-
-
 
 }

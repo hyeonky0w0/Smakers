@@ -3,6 +3,7 @@ package com.example.smakersbe.quiz.controller;
 import com.example.smakersbe.quiz.dto.request.QuizAiAnalysisRequestDTO;
 import com.example.smakersbe.quiz.dto.request.QuizAttemptRequestDTO;
 import com.example.smakersbe.quiz.dto.request.QuizCreateRequestDTO;
+import com.example.smakersbe.quiz.dto.response.QuizzableAssetListResponseDTO;
 import com.example.smakersbe.quiz.dto.response.QuizAiAnalysisResponseDTO;
 import com.example.smakersbe.quiz.dto.response.QuizCreateResponseDTO;
 import com.example.smakersbe.quiz.dto.response.QuizAttemptResponseDTO;
@@ -58,6 +59,16 @@ public class QuizController {
 
         List<QuizHistoryResponseDTO> response = quizService.fetchMyQuizHistory(uuid, assetId);
         return ResponseEntity.ok(response);
+    }
+
+    // 사용자가 학습했던 에셋에 대한 퀴즈 썸네일 반환
+    @GetMapping("/my/quizzable-assets")
+    public ResponseEntity<List<QuizzableAssetListResponseDTO>> fetchMyQuizzableAssets(
+            @RequestParam("uuid") String uuid
+    ){
+        List<QuizzableAssetListResponseDTO> response = quizService.fetchMyQuizzableAssets(uuid);
+        return ResponseEntity.ok(response);
+
     }
 
 
