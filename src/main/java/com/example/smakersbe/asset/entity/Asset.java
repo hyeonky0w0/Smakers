@@ -28,10 +28,6 @@ public class Asset {
     @Column(name="asset_thumbnail_url", length = 1000, nullable = false)
     private String assetThumbnailUrl;
 
-    // 전체 모델 GLB
-    @Column(name="asset_glb_url", length = 1000, nullable = false)
-    private String assetGlbUrl;
-
     // 퀴즈 생성 여부
     @Column(nullable = false)
     private boolean isQuizCreating = false;

@@ -9,9 +9,11 @@ import java.util.Optional;
 public interface PartRepository extends JpaRepository<Part, Long> {
     List<Part> findAllByAsset_AssetId(Long assetId);
 
-    // ✅ 항상 part_id ASC
-    List<Part> findAllByAsset_AssetIdOrderByPartIdAsc(Long assetId);
+
+
+    List<Part> findByAsset_AssetIdOrderByPartIdAsc(Long assetId);
 
     Optional<Part> findByAsset_AssetIdAndPartId(Long assetId, Long partId);
+
 }
 

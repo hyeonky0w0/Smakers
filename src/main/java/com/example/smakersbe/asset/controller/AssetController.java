@@ -3,6 +3,7 @@ package com.example.smakersbe.asset.controller;
 import com.example.smakersbe.asset.dto.response.AssetDetailResponse;
 import com.example.smakersbe.asset.dto.response.AssetThumbnailResponse;
 import com.example.smakersbe.asset.dto.response.PartDetailResponse;
+import com.example.smakersbe.asset.dto.response.PartThumbnailResponse;
 import com.example.smakersbe.asset.service.AssetDetailService;
 import com.example.smakersbe.asset.service.AssetQueryService;
 import com.example.smakersbe.asset.service.PartService;
@@ -81,6 +82,17 @@ public class AssetController {
             @PathVariable Long partId
     ) {
         return ResponseEntity.ok(partService.getPartDetail(assetId, partId));
+    }
+
+
+    @Operation(summary = "에셋에 해당하는 파츠 썸네일 목록 조회",
+            description = "특정 에셋에 속한 파츠들의 (partId, partName, partThumbnailUrl) 목록을 반환합니다.")
+    @GetMapping("/{assetId}/parts")
+    public ResponseEntity<List<PartThumbnailResponse>> getPartThumbnails(
+            @Parameter(description = "에셋 ID", example = "8")
+            @PathVariable Long assetId
+    ) {
+        return ResponseEntity.ok(partService.getPartThumbnails(assetId));
     }
 
 }

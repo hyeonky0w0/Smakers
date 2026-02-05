@@ -1,4 +1,4 @@
-package com.example.smakersbe.config;
+package com.example.smakersbe.asset.config;
 
 import org.springframework.beans.factory.annotation.Value; // 중요: 스프링 어노테이션 사용
 import org.springframework.context.annotation.Bean;

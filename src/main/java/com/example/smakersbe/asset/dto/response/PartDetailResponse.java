@@ -12,4 +12,13 @@ public class PartDetailResponse {
     private String partThumbnailUrl;
     private String partDescription;
     private String material;
+    private Rotation rotation;
+
+    @Getter
+    @Builder
+    public static class Rotation {
+        private double x;
+        private double y;
+        private double z;
+    }
 }
