@@ -29,7 +29,7 @@ public class Asset {
     private String assetThumbnailUrl;
 
     // 퀴즈 생성 여부
-    @Column(nullable = false)
+    @Column(name="is_quiz_creating",nullable = false)
     private boolean isQuizCreating = false;
     // 퀴즈 생성하면 true -> false 로 상태 바꾸기
     public void updateQuizCreatingStatus(boolean status) {
