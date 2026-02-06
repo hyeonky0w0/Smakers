@@ -1,17 +1,14 @@
 package com.example.smakersbe.quiz.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "quiz_user_answers")
-@Data
-@NoArgsConstructor
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder
 public class QuizUserAnswer {
@@ -23,6 +20,7 @@ public class QuizUserAnswer {
     @Column(name="user_choice", nullable = false)
     private Long userChoice;
 
+    @Builder.Default
     @Column(name="is_correct", nullable = false)
     private Boolean isCorrect = false;
 

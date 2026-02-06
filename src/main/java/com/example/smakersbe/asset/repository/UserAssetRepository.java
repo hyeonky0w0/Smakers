@@ -29,6 +29,9 @@ public interface UserAssetRepository extends JpaRepository<UserAsset, Long> {
 """)
     List<UserAsset> findAllByUserUuidFetchAsset(@Param("uuid") String uuid);
 
+    boolean existsByUser_UserIdAndAsset_AssetId(Long userId, Long assetId);
+
+
 
 
 

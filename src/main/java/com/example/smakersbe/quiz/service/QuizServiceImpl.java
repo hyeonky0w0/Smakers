@@ -24,7 +24,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -99,13 +98,13 @@ public class QuizServiceImpl implements QuizService {
             QuizSet nextQuiz = quizSetRepository.findFirstByAssetAndQuizSetIdNotInOrderByQuizSetIdAsc(asset, solvedQuizSetIds)
                     .orElseGet(() -> {
                         // 만약 DB에 아예 퀴즈가 하나도 없다면 동기로 하나 생성
-                        return createTestByAi(new QuizCreateByAiRequestDTO(asset.getAssetId(), "..."));
+                        return createTestByAi(new QuizCreateByAiRequestDTO(asset.getAssetId(), finalMemoContext));
                     });
 
             // 풀지 않은 시험지가 2개 이하면 -> 비동기로 퀴즈 생성 요청
             long remainingCount = quizSetRepository.countByAssetAndQuizSetIdNotIn(asset, solvedQuizSetIds);
             if (remainingCount <= 2 && !asset.isQuizCreating()) {
-                log.info("재고 부족(남은 개수: {})! 비동기로 퀴즈 생성을 시작합니다.", remainingCount);
+                log.info("에셋 ID {}의 재고 부족! 남은 개수: {}", asset.getAssetId(),remainingCount);
                 // 퀴즈 생성 상태 바꿔주기
                 asset.updateQuizCreatingStatus(true);
                 assetRepository.save(asset);
@@ -213,7 +212,7 @@ public class QuizServiceImpl implements QuizService {
         QuizResult quizResult = quizResultRepository.findByQuizAttempt(attempt)
                 .orElseGet(() -> QuizResult.builder().quizAttempt(attempt).build());
 
-        quizResult.setAiReview(getAiAnswer);
+        quizResult.updateAiReview(getAiAnswer);
         quizResultRepository.save(quizResult);
 
         log.info("성공적으로 AI 리뷰가 저장되었습니다. 받아온 답변: {}, Attempt ID: {}", getAiAnswer,attempt.getQuizAttemptId());
