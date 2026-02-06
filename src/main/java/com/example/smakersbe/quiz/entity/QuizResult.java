@@ -2,17 +2,14 @@ package com.example.smakersbe.quiz.entity;
 
 import com.example.smakersbe.user.entity.User;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "quiz_results")
-@Data
-@NoArgsConstructor
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder
 public class QuizResult {
@@ -44,5 +41,9 @@ public class QuizResult {
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name ="quiz_attempt_id", nullable = false)
     private QuizAttempt quizAttempt;
+
+    public void updateAiReview(String review) {
+        this.aiReview = review;
+    }
 
 }

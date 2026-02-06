@@ -24,7 +24,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -213,7 +212,7 @@ public class QuizServiceImpl implements QuizService {
         QuizResult quizResult = quizResultRepository.findByQuizAttempt(attempt)
                 .orElseGet(() -> QuizResult.builder().quizAttempt(attempt).build());
 
-        quizResult.setAiReview(getAiAnswer);
+        quizResult.updateAiReview(getAiAnswer);
         quizResultRepository.save(quizResult);
 
         log.info("성공적으로 AI 리뷰가 저장되었습니다. 받아온 답변: {}, Attempt ID: {}", getAiAnswer,attempt.getQuizAttemptId());
