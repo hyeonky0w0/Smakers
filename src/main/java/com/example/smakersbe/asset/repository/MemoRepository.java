@@ -14,4 +14,12 @@ public interface MemoRepository extends JpaRepository<Memo, Long> {
     Optional<Memo> findByMemoIdAndAsset_AssetIdAndDeletedAtIsNull(Long memoId, Long assetId);
 
     List<Memo> findTop3ByAssetOrderByCreatedAtDesc(Asset asset);
+
+    List<Memo> findByUser_UserIdAndAsset_AssetIdAndDeletedAtIsNullOrderByIsImportantDescUpdatedAtDesc(
+            Long userId, Long assetId
+    );
+
+    Optional<Memo> findByMemoIdAndUser_UserIdAndAsset_AssetIdAndDeletedAtIsNull(
+            Long memoId, Long userId, Long assetId
+    );
 }

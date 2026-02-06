@@ -40,6 +40,9 @@ dependencies {
     // s3
     implementation platform('software.amazon.awssdk:bom:2.20.120')
     implementation 'software.amazon.awssdk:s3'
+    implementation "software.amazon.awssdk:s3:2.25.60"
+    implementation "software.amazon.awssdk:auth:2.25.60"
+    implementation "software.amazon.awssdk:regions:2.25.60"
 
     // json 파싱
     implementation 'com.google.code.gson:gson:2.10.1'

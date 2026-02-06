@@ -45,9 +45,6 @@ public class PartSeeder implements CommandLineRunner {
                         .material("금속")
                         .partThumbnailUrl("https://example.com/parts/drone/1-1-arm-gear.png")
                         .partGlbUrl("https://example.com/parts/drone/1-1-arm-gear.glb")
-                        .assembledX(0).assembledY(0).assembledZ(0)
-                        .explodedX(1).explodedY(0).explodedZ(0)
-                        .rotation(new Vec3(0, 0, 0))
                         .build(),
 
                 Part.builder()
@@ -57,9 +54,6 @@ public class PartSeeder implements CommandLineRunner {
                         .material("금속")
                         .partThumbnailUrl("https://example.com/parts/drone/1-2-beater-disc.png")
                         .partGlbUrl("https://example.com/parts/drone/1-2-beater-disc.glb")
-                        .assembledX(0).assembledY(0).assembledZ(0)
-                        .explodedX(0).explodedY(1).explodedZ(0)
-                        .rotation(new Vec3(0, 0, 0))
                         .build(),
 
                 Part.builder()
@@ -69,9 +63,6 @@ public class PartSeeder implements CommandLineRunner {
                         .material("금속")
                         .partThumbnailUrl("https://example.com/parts/drone/1-3-geearing.png")
                         .partGlbUrl("https://example.com/parts/drone/1-3-geearing.glb")
-                        .assembledX(0).assembledY(0).assembledZ(0)
-                        .explodedX(0).explodedY(0).explodedZ(1)
-                        .rotation(new Vec3(0, 0, 0))
                         .build(),
 
                 Part.builder()
@@ -81,9 +72,6 @@ public class PartSeeder implements CommandLineRunner {
                         .material("금속/플라스틱")
                         .partThumbnailUrl("https://example.com/parts/drone/1-4-impellar-blade.png")
                         .partGlbUrl("https://example.com/parts/drone/1-4-impellar-blade.glb")
-                        .assembledX(0).assembledY(0).assembledZ(0)
-                        .explodedX(-1).explodedY(0).explodedZ(0)
-                        .rotation(new Vec3(0, 0, 0))
                         .build(),
 
                 Part.builder()
@@ -93,9 +81,6 @@ public class PartSeeder implements CommandLineRunner {
                         .material("금속")
                         .partThumbnailUrl("https://example.com/parts/drone/1-5-leg.png")
                         .partGlbUrl("https://example.com/parts/drone/1-5-leg.glb")
-                        .assembledX(0).assembledY(0).assembledZ(0)
-                        .explodedX(0).explodedY(-1).explodedZ(0)
-                        .rotation(new Vec3(0, 0, 0))
                         .build(),
 
                 Part.builder()
@@ -105,9 +90,6 @@ public class PartSeeder implements CommandLineRunner {
                         .material("금속")
                         .partThumbnailUrl("https://example.com/parts/drone/1-6-main-frame.png")
                         .partGlbUrl("https://example.com/parts/drone/1-6-main-frame.glb")
-                        .assembledX(0).assembledY(0).assembledZ(0)
-                        .explodedX(0).explodedY(0).explodedZ(-1)
-                        .rotation(new Vec3(0, 0, 0))
                         .build(),
 
                 Part.builder()
@@ -117,9 +99,6 @@ public class PartSeeder implements CommandLineRunner {
                         .material("금속")
                         .partThumbnailUrl("https://example.com/parts/drone/1-7-main-frame-mir.png")
                         .partGlbUrl("https://example.com/parts/drone/1-7-main-frame-mir.glb")
-                        .assembledX(0).assembledY(0).assembledZ(0)
-                        .explodedX(1).explodedY(1).explodedZ(0)
-                        .rotation(new Vec3(0, 0, 0))
                         .build(),
 
                 Part.builder()
@@ -129,9 +108,6 @@ public class PartSeeder implements CommandLineRunner {
                         .material("금속")
                         .partThumbnailUrl("https://example.com/parts/drone/1-8-nut.png")
                         .partGlbUrl("https://example.com/parts/drone/1-8-nut.glb")
-                        .assembledX(0).assembledY(0).assembledZ(0)
-                        .explodedX(1).explodedY(0).explodedZ(1)
-                        .rotation(new Vec3(0, 0, 0))
                         .build(),
 
                 Part.builder()
@@ -141,9 +117,6 @@ public class PartSeeder implements CommandLineRunner {
                         .material("금속")
                         .partThumbnailUrl("https://example.com/parts/drone/1-9-screw.png")
                         .partGlbUrl("https://example.com/parts/drone/1-9-screw.glb")
-                        .assembledX(0).assembledY(0).assembledZ(0)
-                        .explodedX(0).explodedY(1).explodedZ(1)
-                        .rotation(new Vec3(0, 0, 0))
                         .build(),
 
                 Part.builder()
@@ -153,9 +126,6 @@ public class PartSeeder implements CommandLineRunner {
                         .material("알류미늄 합금")
                         .partThumbnailUrl("https://example.com/parts/drone/1-10-xyz.png")
                         .partGlbUrl("https://example.com/parts/drone/1-10-xyz.glb")
-                        .assembledX(0).assembledY(0).assembledZ(0)
-                        .explodedX(-1).explodedY(-1).explodedZ(0)
-                        .rotation(new Vec3(0, 0, 0))
                         .build(),
 
                 // ===================== Leaf Spring (2-*) =====================
@@ -166,9 +136,6 @@ public class PartSeeder implements CommandLineRunner {
                         .material("금속")
                         .partThumbnailUrl("https://example.com/parts/leaf-spring/2-1-clamp-center.png")
                         .partGlbUrl("https://example.com/parts/leaf-spring/2-1-clamp-center.glb")
-                        .assembledX(0).assembledY(0).assembledZ(0)
-                        .explodedX(1).explodedY(0).explodedZ(0)
-                        .rotation(new Vec3(0, 0, 0))
                         .build(),
 
                 Part.builder()
@@ -178,9 +145,6 @@ public class PartSeeder implements CommandLineRunner {
                         .material("금속")
                         .partThumbnailUrl("https://example.com/parts/leaf-spring/2-2-clamp-primary.png")
                         .partGlbUrl("https://example.com/parts/leaf-spring/2-2-clamp-primary.glb")
-                        .assembledX(0).assembledY(0).assembledZ(0)
-                        .explodedX(0).explodedY(1).explodedZ(0)
-                        .rotation(new Vec3(0, 0, 0))
                         .build(),
 
                 Part.builder()
@@ -190,9 +154,6 @@ public class PartSeeder implements CommandLineRunner {
                         .material("금속")
                         .partThumbnailUrl("https://example.com/parts/leaf-spring/2-3-clamp-secondary.png")
                         .partGlbUrl("https://example.com/parts/leaf-spring/2-3-clamp-secondary.glb")
-                        .assembledX(0).assembledY(0).assembledZ(0)
-                        .explodedX(0).explodedY(0).explodedZ(1)
-                        .rotation(new Vec3(0, 0, 0))
                         .build(),
 
                 Part.builder()
@@ -202,9 +163,6 @@ public class PartSeeder implements CommandLineRunner {
                         .material("플라스틱")
                         .partThumbnailUrl("https://example.com/parts/leaf-spring/2-4-leaf-layer.png")
                         .partGlbUrl("https://example.com/parts/leaf-spring/2-4-leaf-layer.glb")
-                        .assembledX(0).assembledY(0).assembledZ(0)
-                        .explodedX(-1).explodedY(0).explodedZ(0)
-                        .rotation(new Vec3(0, 0, 0))
                         .build(),
 
                 Part.builder()
@@ -214,9 +172,6 @@ public class PartSeeder implements CommandLineRunner {
                         .material("금속")
                         .partThumbnailUrl("https://example.com/parts/leaf-spring/2-5-support.png")
                         .partGlbUrl("https://example.com/parts/leaf-spring/2-5-support.glb")
-                        .assembledX(0).assembledY(0).assembledZ(0)
-                        .explodedX(0).explodedY(-1).explodedZ(0)
-                        .rotation(new Vec3(0, 0, 0))
                         .build(),
 
                 Part.builder()
@@ -226,9 +181,6 @@ public class PartSeeder implements CommandLineRunner {
                         .material("금속")
                         .partThumbnailUrl("https://example.com/parts/leaf-spring/2-6-support-chassis-rigid.png")
                         .partGlbUrl("https://example.com/parts/leaf-spring/2-6-support-chassis-rigid.glb")
-                        .assembledX(0).assembledY(0).assembledZ(0)
-                        .explodedX(0).explodedY(0).explodedZ(-1)
-                        .rotation(new Vec3(0, 0, 0))
                         .build(),
 
                 Part.builder()
@@ -238,9 +190,6 @@ public class PartSeeder implements CommandLineRunner {
                         .material("금속")
                         .partThumbnailUrl("https://example.com/parts/leaf-spring/2-7-support-chassis.png")
                         .partGlbUrl("https://example.com/parts/leaf-spring/2-7-support-chassis.glb")
-                        .assembledX(0).assembledY(0).assembledZ(0)
-                        .explodedX(1).explodedY(1).explodedZ(0)
-                        .rotation(new Vec3(0, 0, 0))
                         .build(),
 
                 Part.builder()
@@ -250,9 +199,6 @@ public class PartSeeder implements CommandLineRunner {
                         .material("고무")
                         .partThumbnailUrl("https://example.com/parts/leaf-spring/2-8-support-rubber-60mm.png")
                         .partGlbUrl("https://example.com/parts/leaf-spring/2-8-support-rubber-60mm.glb")
-                        .assembledX(0).assembledY(0).assembledZ(0)
-                        .explodedX(1).explodedY(0).explodedZ(1)
-                        .rotation(new Vec3(0, 0, 0))
                         .build(),
 
                 Part.builder()
@@ -262,9 +208,6 @@ public class PartSeeder implements CommandLineRunner {
                         .material("고무")
                         .partThumbnailUrl("https://example.com/parts/leaf-spring/2-9-support-rubber.png")
                         .partGlbUrl("https://example.com/parts/leaf-spring/2-9-support-rubber.glb")
-                        .assembledX(0).assembledY(0).assembledZ(0)
-                        .explodedX(0).explodedY(1).explodedZ(1)
-                        .rotation(new Vec3(0, 0, 0))
                         .build(),
 
                 // ===================== Machine Vice (3-*) =====================
@@ -275,9 +218,6 @@ public class PartSeeder implements CommandLineRunner {
                         .material("금속")
                         .partThumbnailUrl("https://example.com/parts/machine-vice/3-1-part1-fuhrung.png")
                         .partGlbUrl("https://example.com/parts/machine-vice/3-1-part1-fuhrung.glb")
-                        .assembledX(0).assembledY(0).assembledZ(0)
-                        .explodedX(1).explodedY(0).explodedZ(0)
-                        .rotation(new Vec3(0, 0, 0))
                         .build(),
 
                 Part.builder()
@@ -287,9 +227,6 @@ public class PartSeeder implements CommandLineRunner {
                         .material("금속")
                         .partThumbnailUrl("https://example.com/parts/machine-vice/3-2-part1.png")
                         .partGlbUrl("https://example.com/parts/machine-vice/3-2-part1.glb")
-                        .assembledX(0).assembledY(0).assembledZ(0)
-                        .explodedX(0).explodedY(1).explodedZ(0)
-                        .rotation(new Vec3(0, 0, 0))
                         .build(),
 
                 Part.builder()
@@ -299,9 +236,6 @@ public class PartSeeder implements CommandLineRunner {
                         .material("금속")
                         .partThumbnailUrl("https://example.com/parts/machine-vice/3-3-part2-feste-backe.png")
                         .partGlbUrl("https://example.com/parts/machine-vice/3-3-part2-feste-backe.glb")
-                        .assembledX(0).assembledY(0).assembledZ(0)
-                        .explodedX(0).explodedY(0).explodedZ(1)
-                        .rotation(new Vec3(0, 90, 0))
                         .build(),
 
                 Part.builder()
@@ -311,9 +245,6 @@ public class PartSeeder implements CommandLineRunner {
                         .material("금속")
                         .partThumbnailUrl("https://example.com/parts/machine-vice/3-4-part3-lose-backe.png")
                         .partGlbUrl("https://example.com/parts/machine-vice/3-4-part3-lose-backe.glb")
-                        .assembledX(0).assembledY(0).assembledZ(0)
-                        .explodedX(-1).explodedY(0).explodedZ(0)
-                        .rotation(new Vec3(0, 90, 0))
                         .build(),
 
                 Part.builder()
@@ -323,9 +254,6 @@ public class PartSeeder implements CommandLineRunner {
                         .material("금속")
                         .partThumbnailUrl("https://example.com/parts/machine-vice/3-5-part4-spindelsockel.png")
                         .partGlbUrl("https://example.com/parts/machine-vice/3-5-part4-spindelsockel.glb")
-                        .assembledX(0).assembledY(0).assembledZ(0)
-                        .explodedX(0).explodedY(-1).explodedZ(0)
-                        .rotation(new Vec3(0, 90, 0))
                         .build(),
 
                 Part.builder()
@@ -335,9 +263,6 @@ public class PartSeeder implements CommandLineRunner {
                         .material("금속")
                         .partThumbnailUrl("https://example.com/parts/machine-vice/3-6-part5-spannbacke.png")
                         .partGlbUrl("https://example.com/parts/machine-vice/3-6-part5-spannbacke.glb")
-                        .assembledX(0).assembledY(0).assembledZ(0)
-                        .explodedX(0).explodedY(0).explodedZ(-1)
-                        .rotation(new Vec3(0, 90, 0))
                         .build(),
 
                 Part.builder()
@@ -347,9 +272,6 @@ public class PartSeeder implements CommandLineRunner {
                         .material("금속")
                         .partThumbnailUrl("https://example.com/parts/machine-vice/3-7-part6-fuhrungschiene.png")
                         .partGlbUrl("https://example.com/parts/machine-vice/3-7-part6-fuhrungschiene.glb")
-                        .assembledX(0).assembledY(0).assembledZ(0)
-                        .explodedX(1).explodedY(1).explodedZ(0)
-                        .rotation(new Vec3(0, 90, 0))
                         .build(),
 
                 Part.builder()
@@ -359,9 +281,6 @@ public class PartSeeder implements CommandLineRunner {
                         .material("금속")
                         .partThumbnailUrl("https://example.com/parts/machine-vice/3-8-part7-trapezspindel.png")
                         .partGlbUrl("https://example.com/parts/machine-vice/3-8-part7-trapezspindel.glb")
-                        .assembledX(0).assembledY(0).assembledZ(0)
-                        .explodedX(1).explodedY(0).explodedZ(1)
-                        .rotation(new Vec3(0, 90, 0))
                         .build(),
 
                 Part.builder()
@@ -371,9 +290,6 @@ public class PartSeeder implements CommandLineRunner {
                         .material("금속")
                         .partThumbnailUrl("https://example.com/parts/machine-vice/3-9-part8-grundplatte.png")
                         .partGlbUrl("https://example.com/parts/machine-vice/3-9-part8-grundplatte.glb")
-                        .assembledX(0).assembledY(0).assembledZ(0)
-                        .explodedX(0).explodedY(1).explodedZ(1)
-                        .rotation(new Vec3(0, 90, 0))
                         .build(),
 
                 Part.builder()
@@ -383,9 +299,6 @@ public class PartSeeder implements CommandLineRunner {
                         .material("금속")
                         .partThumbnailUrl("https://example.com/parts/machine-vice/3-10-part9-druckhulse.png")
                         .partGlbUrl("https://example.com/parts/machine-vice/3-10-part9-druckhulse.glb")
-                        .assembledX(0).assembledY(0).assembledZ(0)
-                        .explodedX(-1).explodedY(-1).explodedZ(0)
-                        .rotation(new Vec3(0, 90, 0))
                         .build(),
 
                 // ===================== Robot Arm (4-*) =====================
@@ -396,9 +309,6 @@ public class PartSeeder implements CommandLineRunner {
                         .material("금속")
                         .partThumbnailUrl("https://example.com/parts/robot-arm/4-1-base.png")
                         .partGlbUrl("https://example.com/parts/robot-arm/4-1-base.glb")
-                        .assembledX(0).assembledY(0).assembledZ(0)
-                        .explodedX(1).explodedY(0).explodedZ(0)
-                        .rotation(new Vec3(0, 90, 0))
                         .build(),
 
                 Part.builder()
@@ -408,9 +318,6 @@ public class PartSeeder implements CommandLineRunner {
                         .material("금속")
                         .partThumbnailUrl("https://example.com/parts/robot-arm/4-2-part2.png")
                         .partGlbUrl("https://example.com/parts/robot-arm/4-2-part2.glb")
-                        .assembledX(0).assembledY(0).assembledZ(0)
-                        .explodedX(0).explodedY(1).explodedZ(0)
-                        .rotation(new Vec3(0, 90, 0))
                         .build(),
 
                 Part.builder()
@@ -420,9 +327,6 @@ public class PartSeeder implements CommandLineRunner {
                         .material("금속")
                         .partThumbnailUrl("https://example.com/parts/robot-arm/4-3-part3.png")
                         .partGlbUrl("https://example.com/parts/robot-arm/4-3-part3.glb")
-                        .assembledX(0).assembledY(0).assembledZ(0)
-                        .explodedX(0).explodedY(0).explodedZ(1)
-                        .rotation(new Vec3(0, 90, 0))
                         .build(),
 
                 Part.builder()
@@ -432,9 +336,6 @@ public class PartSeeder implements CommandLineRunner {
                         .material("금속")
                         .partThumbnailUrl("https://example.com/parts/robot-arm/4-4-part4.png")
                         .partGlbUrl("https://example.com/parts/robot-arm/4-4-part4.glb")
-                        .assembledX(0).assembledY(0).assembledZ(0)
-                        .explodedX(-1).explodedY(0).explodedZ(0)
-                        .rotation(new Vec3(0, 90, 0))
                         .build(),
 
                 Part.builder()
@@ -444,9 +345,6 @@ public class PartSeeder implements CommandLineRunner {
                         .material("금속")
                         .partThumbnailUrl("https://example.com/parts/robot-arm/4-5-part5.png")
                         .partGlbUrl("https://example.com/parts/robot-arm/4-5-part5.glb")
-                        .assembledX(0).assembledY(0).assembledZ(0)
-                        .explodedX(0).explodedY(-1).explodedZ(0)
-                        .rotation(new Vec3(0, 90, 0))
                         .build(),
 
                 Part.builder()
@@ -456,9 +354,6 @@ public class PartSeeder implements CommandLineRunner {
                         .material("금속")
                         .partThumbnailUrl("https://example.com/parts/robot-arm/4-6-part6.png")
                         .partGlbUrl("https://example.com/parts/robot-arm/4-6-part6.glb")
-                        .assembledX(0).assembledY(0).assembledZ(0)
-                        .explodedX(0).explodedY(0).explodedZ(-1)
-                        .rotation(new Vec3(0, 90, 0))
                         .build(),
 
                 Part.builder()
@@ -468,9 +363,6 @@ public class PartSeeder implements CommandLineRunner {
                         .material("금속")
                         .partThumbnailUrl("https://example.com/parts/robot-arm/4-7-part7.png")
                         .partGlbUrl("https://example.com/parts/robot-arm/4-7-part7.glb")
-                        .assembledX(0).assembledY(0).assembledZ(0)
-                        .explodedX(1).explodedY(1).explodedZ(0)
-                        .rotation(new Vec3(0, 90, 0))
                         .build(),
 
                 Part.builder()
@@ -480,9 +372,6 @@ public class PartSeeder implements CommandLineRunner {
                         .material("금속")
                         .partThumbnailUrl("https://example.com/parts/robot-arm/4-8-part8.png")
                         .partGlbUrl("https://example.com/parts/robot-arm/4-8-part8.glb")
-                        .assembledX(0).assembledY(0).assembledZ(0)
-                        .explodedX(1).explodedY(0).explodedZ(1)
-                        .rotation(new Vec3(0, 90, 0))
                         .build(),
 
                 // ===================== Robot Gripper (5-*) =====================
@@ -493,9 +382,6 @@ public class PartSeeder implements CommandLineRunner {
                         .material("금속")
                         .partThumbnailUrl("https://example.com/parts/robot-gripper/5-1-base-gear.png")
                         .partGlbUrl("https://example.com/parts/robot-gripper/5-1-base-gear.glb")
-                        .assembledX(0).assembledY(0).assembledZ(0)
-                        .explodedX(1).explodedY(0).explodedZ(0)
-                        .rotation(new Vec3(0, 90, 0))
                         .build(),
 
                 Part.builder()
@@ -505,9 +391,6 @@ public class PartSeeder implements CommandLineRunner {
                         .material("금속")
                         .partThumbnailUrl("https://example.com/parts/robot-gripper/5-2-base-mounting-bracket.png")
                         .partGlbUrl("https://example.com/parts/robot-gripper/5-2-base-mounting-bracket.glb")
-                        .assembledX(0).assembledY(0).assembledZ(0)
-                        .explodedX(0).explodedY(1).explodedZ(0)
-                        .rotation(new Vec3(0, 90, 0))
                         .build(),
 
                 Part.builder()
@@ -517,9 +400,6 @@ public class PartSeeder implements CommandLineRunner {
                         .material("금속")
                         .partThumbnailUrl("https://example.com/parts/robot-gripper/5-3-base-plate.png")
                         .partGlbUrl("https://example.com/parts/robot-gripper/5-3-base-plate.glb")
-                        .assembledX(0).assembledY(0).assembledZ(0)
-                        .explodedX(0).explodedY(0).explodedZ(1)
-                        .rotation(new Vec3(0, 90, 0))
                         .build(),
 
                 Part.builder()
@@ -529,9 +409,6 @@ public class PartSeeder implements CommandLineRunner {
                         .material("금속")
                         .partThumbnailUrl("https://example.com/parts/robot-gripper/5-4-gear-link-1.png")
                         .partGlbUrl("https://example.com/parts/robot-gripper/5-4-gear-link-1.glb")
-                        .assembledX(0).assembledY(0).assembledZ(0)
-                        .explodedX(-1).explodedY(0).explodedZ(0)
-                        .rotation(new Vec3(0, 90, 0))
                         .build(),
 
                 Part.builder()
@@ -541,9 +418,6 @@ public class PartSeeder implements CommandLineRunner {
                         .material("금속")
                         .partThumbnailUrl("https://example.com/parts/robot-gripper/5-5-gear-link-2.png")
                         .partGlbUrl("https://example.com/parts/robot-gripper/5-5-gear-link-2.glb")
-                        .assembledX(0).assembledY(0).assembledZ(0)
-                        .explodedX(0).explodedY(-1).explodedZ(0)
-                        .rotation(new Vec3(0, 90, 0))
                         .build(),
 
                 Part.builder()
@@ -553,9 +427,6 @@ public class PartSeeder implements CommandLineRunner {
                         .material("금속")
                         .partThumbnailUrl("https://example.com/parts/robot-gripper/5-6-gripper.png")
                         .partGlbUrl("https://example.com/parts/robot-gripper/5-6-gripper.glb")
-                        .assembledX(0).assembledY(0).assembledZ(0)
-                        .explodedX(0).explodedY(0).explodedZ(-1)
-                        .rotation(new Vec3(0, 90, 0))
                         .build(),
 
                 Part.builder()
@@ -565,9 +436,6 @@ public class PartSeeder implements CommandLineRunner {
                         .material("금속")
                         .partThumbnailUrl("https://example.com/parts/robot-gripper/5-7-link.png")
                         .partGlbUrl("https://example.com/parts/robot-gripper/5-7-link.glb")
-                        .assembledX(0).assembledY(0).assembledZ(0)
-                        .explodedX(1).explodedY(1).explodedZ(0)
-                        .rotation(new Vec3(0, 90, 0))
                         .build(),
 
                 Part.builder()
@@ -577,9 +445,6 @@ public class PartSeeder implements CommandLineRunner {
                         .material("금속")
                         .partThumbnailUrl("https://example.com/parts/robot-gripper/5-8-pin.png")
                         .partGlbUrl("https://example.com/parts/robot-gripper/5-8-pin.glb")
-                        .assembledX(0).assembledY(0).assembledZ(0)
-                        .explodedX(1).explodedY(0).explodedZ(1)
-                        .rotation(new Vec3(0, 90, 0))
                         .build(),
 
                 // ===================== Suspension (6-*) =====================
@@ -590,9 +455,6 @@ public class PartSeeder implements CommandLineRunner {
                         .material("금속")
                         .partThumbnailUrl("https://example.com/parts/suspension/6-1-base.png")
                         .partGlbUrl("https://example.com/parts/suspension/6-1-base.glb")
-                        .assembledX(0).assembledY(0).assembledZ(0)
-                        .explodedX(1).explodedY(0).explodedZ(0)
-                        .rotation(new Vec3(0, 90, 0))
                         .build(),
 
                 Part.builder()
@@ -602,9 +464,6 @@ public class PartSeeder implements CommandLineRunner {
                         .material("금속")
                         .partThumbnailUrl("https://example.com/parts/suspension/6-2-nit.png")
                         .partGlbUrl("https://example.com/parts/suspension/6-2-nit.glb")
-                        .assembledX(0).assembledY(0).assembledZ(0)
-                        .explodedX(0).explodedY(1).explodedZ(0)
-                        .rotation(new Vec3(0, 90, 0))
                         .build(),
 
                 Part.builder()
@@ -614,9 +473,6 @@ public class PartSeeder implements CommandLineRunner {
                         .material("금속")
                         .partThumbnailUrl("https://example.com/parts/suspension/6-3-nut.png")
                         .partGlbUrl("https://example.com/parts/suspension/6-3-nut.glb")
-                        .assembledX(0).assembledY(0).assembledZ(0)
-                        .explodedX(0).explodedY(0).explodedZ(1)
-                        .rotation(new Vec3(0, 90, 0))
                         .build(),
 
                 Part.builder()
@@ -626,9 +482,6 @@ public class PartSeeder implements CommandLineRunner {
                         .material("금속")
                         .partThumbnailUrl("https://example.com/parts/suspension/6-4-rod.png")
                         .partGlbUrl("https://example.com/parts/suspension/6-4-rod.glb")
-                        .assembledX(0).assembledY(0).assembledZ(0)
-                        .explodedX(-1).explodedY(0).explodedZ(0)
-                        .rotation(new Vec3(0, 90, 0))
                         .build(),
 
                 Part.builder()
@@ -638,9 +491,6 @@ public class PartSeeder implements CommandLineRunner {
                         .material("금속")
                         .partThumbnailUrl("https://example.com/parts/suspension/6-5-spring.png")
                         .partGlbUrl("https://example.com/parts/suspension/6-5-spring.glb")
-                        .assembledX(0).assembledY(0).assembledZ(0)
-                        .explodedX(0).explodedY(-1).explodedZ(0)
-                        .rotation(new Vec3(0, 90, 0))
                         .build(),
 
                 // ===================== V4_Engine (7-*) =====================
@@ -651,9 +501,6 @@ public class PartSeeder implements CommandLineRunner {
                         .material("강철")
                         .partThumbnailUrl("https://example.com/parts/v4-engine/7-1-connecting-rod-cap.png")
                         .partGlbUrl("https://example.com/parts/v4-engine/7-1-connecting-rod-cap.glb")
-                        .assembledX(0).assembledY(0).assembledZ(0)
-                        .explodedX(1).explodedY(0).explodedZ(0)
-                        .rotation(new Vec3(0, 90, 0))
                         .build(),
 
                 Part.builder()
@@ -663,9 +510,6 @@ public class PartSeeder implements CommandLineRunner {
                         .material("강철")
                         .partThumbnailUrl("https://example.com/parts/v4-engine/7-2-connecting-rod.png")
                         .partGlbUrl("https://example.com/parts/v4-engine/7-2-connecting-rod.glb")
-                        .assembledX(0).assembledY(0).assembledZ(0)
-                        .explodedX(0).explodedY(1).explodedZ(0)
-                        .rotation(new Vec3(0, 90, 0))
                         .build(),
 
                 Part.builder()
@@ -675,9 +519,6 @@ public class PartSeeder implements CommandLineRunner {
                         .material("고강도 강철")
                         .partThumbnailUrl("https://example.com/parts/v4-engine/7-3-conrod-bolt.png")
                         .partGlbUrl("https://example.com/parts/v4-engine/7-3-conrod-bolt.glb")
-                        .assembledX(0).assembledY(0).assembledZ(0)
-                        .explodedX(0).explodedY(0).explodedZ(1)
-                        .rotation(new Vec3(0, 90, 0))
                         .build(),
 
                 Part.builder()
@@ -687,9 +528,6 @@ public class PartSeeder implements CommandLineRunner {
                         .material("단조강")
                         .partThumbnailUrl("https://example.com/parts/v4-engine/7-4-crankshaft.png")
                         .partGlbUrl("https://example.com/parts/v4-engine/7-4-crankshaft.glb")
-                        .assembledX(0).assembledY(0).assembledZ(0)
-                        .explodedX(-1).explodedY(0).explodedZ(0)
-                        .rotation(new Vec3(0, 90, 0))
                         .build(),
 
                 Part.builder()
@@ -699,9 +537,6 @@ public class PartSeeder implements CommandLineRunner {
                         .material("강철")
                         .partThumbnailUrl("https://example.com/parts/v4-engine/7-5-piston-pin.png")
                         .partGlbUrl("https://example.com/parts/v4-engine/7-5-piston-pin.glb")
-                        .assembledX(0).assembledY(0).assembledZ(0)
-                        .explodedX(0).explodedY(-1).explodedZ(0)
-                        .rotation(new Vec3(0, 90, 0))
                         .build(),
 
                 Part.builder()
@@ -711,9 +546,6 @@ public class PartSeeder implements CommandLineRunner {
                         .material("강철")
                         .partThumbnailUrl("https://example.com/parts/v4-engine/7-6-piston-ring.png")
                         .partGlbUrl("https://example.com/parts/v4-engine/7-6-piston-ring.glb")
-                        .assembledX(0).assembledY(0).assembledZ(0)
-                        .explodedX(0).explodedY(0).explodedZ(-1)
-                        .rotation(new Vec3(0, 90, 0))
                         .build(),
 
                 Part.builder()
@@ -723,9 +555,6 @@ public class PartSeeder implements CommandLineRunner {
                         .material("알리미늄")
                         .partThumbnailUrl("https://example.com/parts/v4-engine/7-7-piston.png")
                         .partGlbUrl("https://example.com/parts/v4-engine/7-7-piston.glb")
-                        .assembledX(0).assembledY(0).assembledZ(0)
-                        .explodedX(1).explodedY(1).explodedZ(0)
-                        .rotation(new Vec3(0, 90, 0))
                         .build()
         ));
     }
