@@ -4,6 +4,8 @@ import com.example.smakersbe.asset.dto.request.MemoCreateRequest;
 import com.example.smakersbe.asset.dto.request.MemoUpdateRequest;
 import com.example.smakersbe.asset.dto.response.MemoResponse;
 import com.example.smakersbe.asset.service.MemoService;
+import com.example.smakersbe.user.entity.User;
+import com.example.smakersbe.user.service.UserResolveService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,33 +18,32 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
 
-@Tag(name = "Study Memo", description = "스터디 메모 CRUD API")
+@Tag(name = "Study Memo", description = "유저별 스터디 메모 CRUD API")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/assets/{assetId}/memos")
 public class MemoController {
 
     private final MemoService memoService;
+    private final UserResolveService userResolveService;
 
-    @Operation(
-            summary = "스터디 메모 리스트 조회",
-            description = "특정 에셋(assetId)에 속한 메모 목록을 조회합니다."
-    )
+    @Operation(summary = "내 메모 리스트 조회", description = "특정 에셋(assetId)에 대해 로그인 유저의 메모 목록만 조회합니다.")
     @GetMapping
     public List<MemoResponse> getMemos(
+            @Parameter(description = "사용자 식별 UUID", example = "test-uuid-001", required = true)
+            @RequestHeader("X-USER-UUID") String uuid,
             @Parameter(description = "에셋 ID", example = "1", required = true)
             @PathVariable Long assetId
     ) {
-        return memoService.getMemos(assetId);
+        User user = userResolveService.getOrCreateByUuid(uuid);
+        return memoService.getMemos(user.getUserId(), assetId);
     }
 
-
-    @Operation(
-            summary = "스터디 메모 작성",
-            description = "특정 에셋(assetId)에 메모를 생성합니다."
-    )
+    @Operation(summary = "내 메모 작성", description = "특정 에셋(assetId)에 대해 로그인 유저의 메모를 생성합니다.")
     @PostMapping
     public MemoResponse createMemo(
+            @Parameter(description = "사용자 식별 UUID", example = "test-uuid-001", required = true)
+            @RequestHeader("X-USER-UUID") String uuid,
             @Parameter(description = "에셋 ID", example = "1", required = true)
             @PathVariable Long assetId,
             @RequestBody(
@@ -52,16 +53,15 @@ public class MemoController {
             )
             @org.springframework.web.bind.annotation.RequestBody MemoCreateRequest req
     ) {
-        return memoService.createMemo(assetId, req);
+        User user = userResolveService.getOrCreateByUuid(uuid);
+        return memoService.createMemo(user, assetId, req);
     }
 
-
-    @Operation(
-            summary = "스터디 메모 수정",
-            description = "memoId의 메모를 수정합니다. 요청 필드가 null이면 해당 필드는 수정하지 않습니다. (부분 수정)"
-    )
+    @Operation(summary = "내 메모 수정", description = "memoId의 메모를 수정합니다. (내 메모만 가능)")
     @PatchMapping("/{memoId}")
     public MemoResponse updateMemo(
+            @Parameter(description = "사용자 식별 UUID", example = "test-uuid-001", required = true)
+            @RequestHeader("X-USER-UUID") String uuid,
             @Parameter(description = "에셋 ID", example = "1", required = true)
             @PathVariable Long assetId,
             @Parameter(description = "메모 ID", example = "1", required = true)
@@ -73,22 +73,21 @@ public class MemoController {
             )
             @org.springframework.web.bind.annotation.RequestBody MemoUpdateRequest req
     ) {
-        return memoService.updateMemo(assetId, memoId, req);
+        User user = userResolveService.getOrCreateByUuid(uuid);
+        return memoService.updateMemo(user.getUserId(), assetId, memoId, req);
     }
 
-
-    //일단 hard_delete로 구현 후 나중에 휴지통등 기능 생기면 deleted_at 추가로 사용
-    @Operation(
-            summary = "스터디 메모 삭제(소프트 삭제)",
-            description = "memoId의 메모를 deletedAt=now 로 처리합니다. (DB에서 실제 delete 아님)"
-    )
+    @Operation(summary = "내 메모 삭제(소프트 삭제)", description = "memoId의 메모를 deletedAt=now 처리합니다. (내 메모만 가능)")
     @DeleteMapping("/{memoId}")
     public void deleteMemo(
+            @Parameter(description = "사용자 식별 UUID", example = "test-uuid-001", required = true)
+            @RequestHeader("X-USER-UUID") String uuid,
             @Parameter(description = "에셋 ID", example = "1", required = true)
             @PathVariable Long assetId,
             @Parameter(description = "메모 ID", example = "1", required = true)
             @PathVariable Long memoId
     ) {
-        memoService.deleteMemo(assetId, memoId);
+        User user = userResolveService.getOrCreateByUuid(uuid);
+        memoService.deleteMemo(user.getUserId(), assetId, memoId);
     }
 }

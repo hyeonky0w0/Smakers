@@ -38,32 +38,6 @@ public class Part {
     @Column(name="material", length = 50)
     private String material;
 
-    // 조립 완료 좌표
-    @Column(name="assembled_x", nullable = false)
-    private double assembledX;
-    @Column(name="assembled_y", nullable = false)
-    private double assembledY;
-    @Column(name="assembled_z", nullable = false)
-    private double assembledZ;
-
-    // 조립 전 (분해 완료) 좌표
-    @Column(name="exploded_x", nullable = false)
-    private double explodedX;
-    @Column(name="exploded_y", nullable = false)
-    private double explodedY;
-    @Column(name="exploded_z", nullable = false)
-    private double explodedZ;
-
-    // ✅ 회전값 (기본 0,0,0)
-    @Embedded
-    @AttributeOverrides({
-            @AttributeOverride(name = "x", column = @Column(name="rotation_x", nullable = false)),
-            @AttributeOverride(name = "y", column = @Column(name="rotation_y", nullable = false)),
-            @AttributeOverride(name = "z", column = @Column(name="rotation_z", nullable = false))
-    })
-    @Builder.Default
-    private Vec3 rotation = new Vec3(0, 0, 0);
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name ="asset_id", nullable = false)
     private Asset asset;

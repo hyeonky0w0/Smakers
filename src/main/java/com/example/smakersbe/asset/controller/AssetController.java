@@ -61,7 +61,7 @@ public class AssetController {
     public ResponseEntity<AssetDetailResponse> getAssetDetail(
             @Parameter(description = "사용자 식별 UUID", example = "test-uuid-001")
             @RequestHeader("X-USER-UUID") String uuid,
-            @Parameter(description = "에셋 ID", example = "8")
+            @Parameter(description = "에셋 ID", example = "1")
             @PathVariable Long assetId
     ) {
         User user = userResolveService.getOrCreateByUuid(uuid);
@@ -76,7 +76,7 @@ public class AssetController {
             description = "단일 부품 모델(glb/썸네일/설명/소재)을 반환합니다.")
     @GetMapping("/{assetId}/parts/{partId}")
     public ResponseEntity<PartDetailResponse> getPartDetail(
-            @Parameter(description = "에셋 ID", example = "8")
+            @Parameter(description = "에셋 ID", example = "1")
             @PathVariable Long assetId,
             @Parameter(description = "부품(파트) ID", example = "1")
             @PathVariable Long partId
@@ -89,7 +89,7 @@ public class AssetController {
             description = "특정 에셋에 속한 파츠들의 (partId, partName, partThumbnailUrl) 목록을 반환합니다.")
     @GetMapping("/{assetId}/parts")
     public ResponseEntity<List<PartThumbnailResponse>> getPartThumbnails(
-            @Parameter(description = "에셋 ID", example = "8")
+            @Parameter(description = "에셋 ID", example = "1")
             @PathVariable Long assetId
     ) {
         return ResponseEntity.ok(partService.getPartThumbnails(assetId));

@@ -20,7 +20,6 @@ public class AssetDetailService {
 
     @Transactional(readOnly = true)
     public AssetDetailResponse getAssetDetail(Long assetId) {
-
         Asset asset = assetRepository.findById(assetId)
                 .orElseThrow(() -> new IllegalArgumentException("Asset not found: " + assetId));
 
@@ -33,16 +32,7 @@ public class AssetDetailService {
                         p.getPartDescription(),
                         p.getPartThumbnailUrl(),
                         p.getPartGlbUrl(),
-                        p.getMaterial(),
-                        new AssetDetailResponse.Position(
-                                p.getAssembledX(), p.getAssembledY(), p.getAssembledZ()
-                        ),
-                        new AssetDetailResponse.Position(
-                                p.getExplodedX(), p.getExplodedY(), p.getExplodedZ()
-                        ),
-                        new AssetDetailResponse.Position(
-                                p.getRotation().getX(), p.getRotation().getY(), p.getRotation().getZ()
-                        )
+                        p.getMaterial()
                 ))
                 .toList();
 
@@ -50,6 +40,15 @@ public class AssetDetailService {
                 asset.getAssetId(),
                 asset.getAssetName(),
                 asset.getAssetDescription(),
+                asset.getAssetThumbnailUrl(),
+                asset.getAssetExplodedGlbUrl(),
+                asset.getAssetAssembledGlbUrl(),
+                new AssetDetailResponse.Vec3Dto(
+                        asset.getPosition().getX(), asset.getPosition().getY(), asset.getPosition().getZ()
+                ),
+                new AssetDetailResponse.Vec3Dto(
+                        asset.getRotation().getX(), asset.getRotation().getY(), asset.getRotation().getZ()
+                ),
                 partItems
         );
     }

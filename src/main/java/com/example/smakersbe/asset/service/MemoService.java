@@ -7,6 +7,7 @@ import com.example.smakersbe.asset.entity.Asset;
 import com.example.smakersbe.asset.entity.Memo;
 import com.example.smakersbe.asset.repository.AssetRepository;
 import com.example.smakersbe.asset.repository.MemoRepository;
+import com.example.smakersbe.user.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,15 +24,15 @@ public class MemoService {
     private final AssetRepository assetRepository;
 
     @Transactional(readOnly = true)
-    public List<MemoResponse> getMemos(Long assetId) {
+    public List<MemoResponse> getMemos(Long userId, Long assetId) {
         return memoRepository
-                .findByAsset_AssetIdAndDeletedAtIsNullOrderByIsImportantDescUpdatedAtDesc(assetId)
+                .findByUser_UserIdAndAsset_AssetIdAndDeletedAtIsNullOrderByIsImportantDescUpdatedAtDesc(userId, assetId)
                 .stream()
                 .map(this::toResponse)
                 .toList();
     }
 
-    public MemoResponse createMemo(Long assetId, MemoCreateRequest req) {
+    public MemoResponse createMemo(User user, Long assetId, MemoCreateRequest req) {
         Asset asset = assetRepository.findById(assetId)
                 .orElseThrow(() -> new IllegalArgumentException("Asset not found: " + assetId));
 
@@ -45,29 +46,32 @@ public class MemoService {
                 .memoContents(req.getMemoContents())
                 .isImportant(req.getIsImportant() != null && req.getIsImportant())
                 .asset(asset)
+                .user(user) // ✅ 작성자 연결
                 .build();
 
-        Memo saved = memoRepository.save(memo);
-        return toResponse(saved);
+        return toResponse(memoRepository.save(memo));
     }
 
-    public MemoResponse updateMemo(Long assetId, Long memoId, MemoUpdateRequest req) {
-        Memo memo = memoRepository.findByMemoIdAndAsset_AssetIdAndDeletedAtIsNull(memoId, assetId)
+    public MemoResponse updateMemo(Long userId, Long assetId, Long memoId, MemoUpdateRequest req) {
+        Memo memo = memoRepository
+                .findByMemoIdAndUser_UserIdAndAsset_AssetIdAndDeletedAtIsNull(memoId, userId, assetId)
                 .orElseThrow(() -> new IllegalArgumentException("Memo not found: " + memoId));
 
+        // 부분 수정
         if (req.getMemoTitle() != null) memo.setMemoTitle(req.getMemoTitle());
         if (req.getMemoContents() != null) memo.setMemoContents(req.getMemoContents());
         if (req.getIsImportant() != null) memo.setIsImportant(req.getIsImportant());
 
-        // @PreUpdate로 updatedAt 자동 반영
+        // @PreUpdate로 updatedAt 갱신
         return toResponse(memo);
     }
 
-    public void deleteMemo(Long assetId, Long memoId) {
-        Memo memo = memoRepository.findByMemoIdAndAsset_AssetIdAndDeletedAtIsNull(memoId, assetId)
+    public void deleteMemo(Long userId, Long assetId, Long memoId) {
+        Memo memo = memoRepository
+                .findByMemoIdAndUser_UserIdAndAsset_AssetIdAndDeletedAtIsNull(memoId, userId, assetId)
                 .orElseThrow(() -> new IllegalArgumentException("Memo not found: " + memoId));
 
-        memo.setDeletedAt(LocalDateTime.now()); // 소프트 삭제
+        memo.setDeletedAt(LocalDateTime.now());
     }
 
     private MemoResponse toResponse(Memo memo) {
@@ -82,4 +86,3 @@ public class MemoService {
                 .build();
     }
 }
-

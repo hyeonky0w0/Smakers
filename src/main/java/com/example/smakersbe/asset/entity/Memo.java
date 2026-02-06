@@ -1,4 +1,5 @@
 package com.example.smakersbe.asset.entity;
+import com.example.smakersbe.user.entity.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -40,6 +41,11 @@ public class Memo {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name ="asset_id", nullable = false)
     private Asset asset;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
+
 
     //createdAt/updatedAt을 자동으로 세팅, 소프트 삭제 안전장치
     @PrePersist
