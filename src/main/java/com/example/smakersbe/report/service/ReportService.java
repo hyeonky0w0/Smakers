@@ -5,6 +5,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 public interface ReportService {
 
-    byte[] createReport(String uuid, Long assetId, ReportRequestDTO requestDTO, MultipartFile captureImage);
+    byte[] createReport(Long userId, Long assetId, boolean onlyImportant, MultipartFile captureImage);
 
 }

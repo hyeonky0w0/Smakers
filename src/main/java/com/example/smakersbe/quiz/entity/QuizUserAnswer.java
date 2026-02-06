@@ -20,6 +20,7 @@ public class QuizUserAnswer {
     @Column(name="user_choice", nullable = false)
     private Long userChoice;
 
+    @Builder.Default
     @Column(name="is_correct", nullable = false)
     private Boolean isCorrect = false;
 

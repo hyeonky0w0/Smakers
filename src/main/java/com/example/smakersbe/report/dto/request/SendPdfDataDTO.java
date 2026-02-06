@@ -8,6 +8,5 @@ import lombok.NoArgsConstructor;
 @Builder
 @Getter
 @AllArgsConstructor
-@NoArgsConstructor
 public class SendPdfDataDTO {
 }
