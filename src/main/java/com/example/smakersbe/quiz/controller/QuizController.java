@@ -9,6 +9,9 @@ import com.example.smakersbe.quiz.dto.response.QuizCreateResponseDTO;
 import com.example.smakersbe.quiz.dto.response.QuizAttemptResponseDTO;
 import com.example.smakersbe.quiz.dto.response.QuizHistoryResponseDTO;
 import com.example.smakersbe.quiz.service.QuizService;
+import com.example.smakersbe.user.entity.User;
+import com.example.smakersbe.user.repository.UserRepository;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -23,12 +26,17 @@ import java.util.List;
 public class QuizController {
 
     private final QuizService quizService;
+    private final UserRepository userRepository;
 
     @PostMapping("/create")
-    public ResponseEntity<List<QuizCreateResponseDTO>> createQuiz(@RequestBody QuizCreateRequestDTO requestDTO) {
-        log.info("퀴즈 생성/조회 요청: user={}, asset={}", requestDTO.getUuid(), requestDTO.getAssetId());
+    public ResponseEntity<List<QuizCreateResponseDTO>> createQuiz(
+            @RequestHeader("X-USER-UUID") String uuid,
+            @RequestBody QuizCreateRequestDTO requestDTO) {
 
-        List<QuizCreateResponseDTO> response = quizService.createQuiz(requestDTO);
+        User user = userRepository.findByUuid(uuid)
+                .orElseThrow(() -> new EntityNotFoundException("유저 없음"));
+
+        List<QuizCreateResponseDTO> response = quizService.createQuiz(requestDTO, user);
 
         return ResponseEntity.ok(response);
     }

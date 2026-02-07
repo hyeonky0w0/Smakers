@@ -54,9 +54,8 @@ public class QuizServiceImpl implements QuizService {
      */
     /* 퀴즈 생성 요청이 들어오면 -> 퀴즈 생성 중인 컬럼을 true로 변경 */
     @Transactional
-    public List<QuizCreateResponseDTO> createQuiz(QuizCreateRequestDTO requestDTO){
+    public List<QuizCreateResponseDTO> createQuiz(QuizCreateRequestDTO requestDTO, User user){
 
-        User user = userRepository.findByUuid(requestDTO.getUuid()).orElseThrow();
         Asset asset = assetRepository.findById(requestDTO.getAssetId()).orElseThrow();
 
         // 에셋의 메모들 모으기 (최신 3개 합침)
@@ -79,8 +78,6 @@ public class QuizServiceImpl implements QuizService {
                             .quizSetItemId(item.getQuizSetItemId())
                             .question(item.getQuestion())
                             .options(parseOptions(item.getOptions())) // JSON String을 List로 변환
-                            .answer(item.getAnswer())
-                            .explanation(item.getExplanation())
                             .hint(item.getHint())
                             .build())
                     .collect(Collectors.toList());
@@ -274,8 +271,20 @@ public class QuizServiceImpl implements QuizService {
         String context = aiGenerateService.buildAssetAndMemoContext(asset, requestDTO.getMemoContents());
 
         String aiQuizJson = aiGenerateService.getAiAnswer(
-                "너는 기계공학 퀴즈 생성 도우미. 반드시 JSON 배열 형식으로만 응답해. [{\"question\": \"...\", \"options\": [\"...\"], \"answer\": 0, \"explanation\": \"...\", \"hint\": \"...\"}]",
-                "이 정보를 바탕으로 퀴즈 4개를 만들어줘.\n" + "선지(options)는 각 퀴즈당 4개야.\n" + "선지 번호(answer)은 골고루 섞어.\n" +"각 문제에 대한 힌트(hint)도 생성해줘\n"+"사용자가 메모한 특정 용어나 개념은 적극 활용하되, 그것이 메모에서 왔다는 사실은 비밀로 할 것.",
+                "너는 기계공학 퀴즈 출제 위원이자 학습 가이드야.\n" +
+                        "- 답변 톤: 전문적이면서도 친절한 '-해요'체를 사용해 주세요. (단, '정답이세요' 같은 과한 존칭은 절대 금지)\n" +
+                        "- 반드시 JSON 배열 형식으로만 응답해: [{\"question\": \"...\", \"options\": [\"...\"], \"answer\": 0, \"explanation\": \"...\", \"hint\": \"...\"}]",
+
+                "이 정보를 바탕으로 퀴즈 4개를 생성해 주세요.\n" +
+                        "1. 해설(explanation) 작성 규칙:\n" +
+                        "   - '정답은 ~번입니다', '정답이세요'와 같은 문구는 생략하고 곧바로 기술적인 원리를 설명하세요.\n" +
+                        "   - 해당 부품이 시스템 내에서 수행하는 핵심 기능과 원리를 중심으로 설명해 주세요.\n" +
+                        "   - 예: '이 부품은 회전 운동을 직선 운동으로 변환하여 이동 죠를 움직이는 핵심 역할을 수행해요.' (O)\n" +
+                        "2. 힌트(hint) 작성 규칙:\n" +
+                        "   - 직접적인 정답 단어를 절대 포함하지 마세요.\n" +
+                        "   - 부품의 물리적 특징이나 위치를 질문하는 유도 심문을 사용해 보세요.\n" +
+                        "3. 모든 문장은 문법에 맞는 표준 구어체(-해요, -입니다)를 유지해 주세요.\n" +
+                        "4. 사용자의 메모 내용은 비밀스럽게 지식에 녹여내어 문제를 구성해 주세요.",
                 5000,
                 context);
 
@@ -288,7 +297,7 @@ public class QuizServiceImpl implements QuizService {
 
         // objectMapper : ai에게 받은 String 을 json으로 변환
         try {
-            List<QuizCreateResponseDTO> responseDTOS = objectMapper.readValue(cleanedJson, new TypeReference<List<QuizCreateResponseDTO>>() {});
+            List<QuizCreateByAiResponseDTO> responseDTOS = objectMapper.readValue(cleanedJson, new TypeReference<List<QuizCreateByAiResponseDTO>>() {});
 
             // QuizSet(시험지 묶음) 생성 및 저장
             QuizSet quizSet = QuizSet.builder()
@@ -297,7 +306,7 @@ public class QuizServiceImpl implements QuizService {
             quizSetRepository.save(quizSet);
 
             // 퀴즈 하나씩 꺼내서 QuizSetItem 엔티티로 변환해서 저장
-            for (QuizCreateResponseDTO dto : responseDTOS) {
+            for (QuizCreateByAiResponseDTO dto : responseDTOS) {
                 // 퀴즈 한 문제의 options을 String으로 바꾸기 -> objectMapper에서 다시 json으로 바꾼다.
                 String jsonOptions = objectMapper.writeValueAsString(dto.getOptions());
                 QuizSetItem quizItem = QuizSetItem.builder()
@@ -331,8 +340,6 @@ public class QuizServiceImpl implements QuizService {
                         .quizSetItemId(item.getQuizSetItemId())
                         .question(item.getQuestion())
                         .options(parseOptions(item.getOptions())) // 우리가 만든 JSON 파싱 메서드 활용!
-                        .answer(item.getAnswer())
-                        .explanation(item.getExplanation())
                         .hint(item.getHint())
                         .build())
                 .collect(Collectors.toList());

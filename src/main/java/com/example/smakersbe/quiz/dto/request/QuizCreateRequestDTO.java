@@ -9,6 +9,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class QuizCreateRequestDTO {
     private Long assetId;
-    private String uuid;
     private Long quizSetId;
 }
