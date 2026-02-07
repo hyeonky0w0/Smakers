@@ -8,8 +8,5 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class AiChatRequestDTO {
-
-    private Long assetId;
     private String question;
-    private String uuid;
 }

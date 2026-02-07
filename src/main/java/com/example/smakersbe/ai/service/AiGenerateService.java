@@ -15,6 +15,8 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Flux;
 
 import java.util.List;
 
@@ -27,7 +29,53 @@ public class AiGenerateService {
     private String apiKey;
     private final RestTemplate restTemplate;
     private final AssetPartRepository assetPartRepository;
+    private final WebClient webClient = WebClient.builder().build();
 
+
+
+    // ai 채팅 생성
+    public Flux<String> callAiStream(String systemPrompt, String userPrompt, Integer max_tokens, String context, String question) {
+        String url = "https://api.openai.com/v1/chat/completions";
+        String finalContent = userPrompt + context + (question != null ? "\n\n질문: " + question : "");
+
+        // 1. 요청 바디 구성 (stream: true 설정!)
+        JSONObject requestBody = new JSONObject();
+        requestBody.put("model", "gpt-5-mini"); // 채연 님이 쓰시던 모델 그대로!
+        requestBody.put("max_completion_tokens", max_tokens);
+        requestBody.put("stream", true); // 스트리밍 활성화
+
+        JSONArray messages = new JSONArray();
+        messages.put(new JSONObject().put("role", "system").put("content", systemPrompt));
+        messages.put(new JSONObject().put("role", "user").put("content", finalContent));
+        requestBody.put("messages", messages);
+
+        return webClient.post()
+                .uri(url)
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + apiKey)
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue(requestBody.toString())
+                .retrieve()
+                .bodyToFlux(String.class) // 조각(Chunk) 단위로 받기
+                .filter(data -> !data.contains("[DONE]")) // 끝 신호 제외
+                .map(data -> {
+                    try {
+                        // 중요: OpenAI 스트리밍은 "data: " 로 시작하므로 이 글자를 지워줘야 JSONObject가 인식해요!
+                        String jsonStr = data.replace("data: ", "").trim();
+                        if (jsonStr.isEmpty()) return "";
+
+                        JSONObject json = new JSONObject(jsonStr);
+                        return json.getJSONArray("choices")
+                                .getJSONObject(0)
+                                .getJSONObject("delta")
+                                .optString("content", "");
+                    } catch (Exception e) {
+                        return ""; // 파싱 실패 시 빈 문자열
+                    }
+                });
+    }
+
+
+    // ai 퀴즈 생성
     public String callAi(String systemPrompt, String userPrompt, Integer max_tokens, String context, String question){
 
         String url = "https://api.openai.com/v1/chat/completions";
@@ -88,16 +136,16 @@ public class AiGenerateService {
 
     }
 
+
+
     // 질문용 ai 생성기
-    public String getAiAnswer(String systemPrompt, String userPrompt, Integer max_tokens, String context, String question) {
-        return callAi(systemPrompt, userPrompt, max_tokens, context, question);
-    }
+//    public String getAiAnswer(String systemPrompt, String userPrompt, Integer max_tokens, String context, String question) {
+//        return callAi(systemPrompt, userPrompt, max_tokens, context, question);
+//    }
     // 퀴즈용 ai 생성기
     public String getAiAnswer(String systemPrompt, String userPrompt, Integer max_tokens, String context) {
         return callAi(systemPrompt, userPrompt, max_tokens, context, null);
     }
-
-
 
 
     // 1. 에셋에 대한 context 생성하는 함수
