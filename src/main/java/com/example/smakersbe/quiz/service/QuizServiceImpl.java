@@ -33,6 +33,7 @@ import com.example.smakersbe.asset.repository.MemoRepository;
 @Service
 @Slf4j
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class QuizServiceImpl implements QuizService {
 
     private final QuizSetRepository quizSetRepository;
@@ -51,10 +52,28 @@ public class QuizServiceImpl implements QuizService {
         처음 시행하는 시험(퀴즈 세트)라면 -> quiz_set_id 값에 Null 전달
      */
     /* 퀴즈 생성 요청이 들어오면 -> 퀴즈 생성 중인 컬럼을 true로 변경 */
-    @Transactional
-    public List<QuizCreateResponseDTO> createQuiz(QuizCreateRequestDTO requestDTO, User user){
+    // 기존의 퀴즈 다시 풀기
+    @Transactional(readOnly = true)
+    public List<QuizCreateResponseDTO> getQuizItemsByQuizSetId(Long quizSetId){
+        List<QuizSetItem> items = quizSetItemRepository.findAllByQuizSetId(quizSetId);
 
-        Asset asset = assetRepository.findById(requestDTO.getAssetId()).orElseThrow();
+        return items.stream().map(item -> QuizCreateResponseDTO.builder()
+                        .quizSetId(quizSetId)
+                        .assetId(item.getQuizSet().getAsset().getAssetId())
+                        .quizSetItemId(item.getQuizSetItemId())
+                        .question(item.getQuestion())
+                        .options(parseOptions(item.getOptions()))
+                        .hint(item.getHint())
+                        .build())
+                .collect(Collectors.toList());
+
+    }
+
+    @Transactional
+    public List<QuizCreateResponseDTO> createQuiz(Long assetId, User user){
+
+        Asset asset = assetRepository.findById(assetId)
+                .orElseThrow(() -> new EntityNotFoundException("해당 ID의 에셋을 찾을 수 없습니다: " + assetId));
 
         // 에셋의 메모들 모으기 (최신 3개 합침)
         List<Memo> memos = memoRepository.findTop3ByAssetOrderByCreatedAtDesc(asset);
@@ -63,70 +82,51 @@ public class QuizServiceImpl implements QuizService {
                 .collect(Collectors.joining(" / "));
         // 메모가 아예 없으면 기본값 설정
         if (memoContext.isEmpty()) memoContext = "기계공학 기초 개념";
-
-        if (requestDTO.getQuizSetId() != null){
-            // 시험지 id가 있으면
-            Long quizSetId = requestDTO.getQuizSetId();
-            // 시험지 정보 반환하기
-            List<QuizSetItem> items = quizSetItemRepository.findAllByQuizSetId(quizSetId);
-
-            return items.stream().map(item -> QuizCreateResponseDTO.builder()
-                            .quizSetId(quizSetId)
-                            .assetId(item.getQuizSet().getAsset().getAssetId()) // 부모 에셋 id
-                            .quizSetItemId(item.getQuizSetItemId())
-                            .question(item.getQuestion())
-                            .options(parseOptions(item.getOptions())) // JSON String을 List로 변환
-                            .hint(item.getHint())
-                            .build())
-                    .collect(Collectors.toList());
-
-        } else{
             // 안 푼 시험지 반환하기
-            List<Long> solvedQuizSetIds = quizAttemptRepository.findQuizSetIdsByUserAndAsset(user, asset);
+        List<Long> solvedQuizSetIds = quizAttemptRepository.findQuizSetIdsByUserAndAsset(user, asset);
 
-            if (solvedQuizSetIds.isEmpty()) {
-                solvedQuizSetIds = List.of(-1L);
-            }
-
-            // 다음에 풀 시험지 -> 가장 과거에 생성된 시험지
-            final String finalMemoContext = memoContext;
-            QuizSet nextQuiz = quizSetRepository.findFirstByAssetAndQuizSetIdNotInOrderByQuizSetIdAsc(asset, solvedQuizSetIds)
-                    .orElseGet(() -> {
-                        // 만약 DB에 아예 퀴즈가 하나도 없다면 동기로 하나 생성
-                        return createTestByAi(new QuizCreateByAiRequestDTO(asset.getAssetId(), finalMemoContext));
-                    });
-
-            // 풀지 않은 시험지가 2개 이하면 -> 비동기로 퀴즈 생성 요청
-            long remainingCount = quizSetRepository.countByAssetAndQuizSetIdNotIn(asset, solvedQuizSetIds);
-            if (remainingCount <= 2 && !asset.isQuizCreating()) {
-                log.info("에셋 ID {}의 재고 부족! 남은 개수: {}", asset.getAssetId(),remainingCount);
-                // 퀴즈 생성 상태 바꿔주기
-                asset.updateQuizCreatingStatus(true);
-                assetRepository.save(asset);
-                // 비동기 호출
-                CompletableFuture.runAsync(() -> {
-                    try {
-                        createTestByAi(new QuizCreateByAiRequestDTO(asset.getAssetId(), finalMemoContext));
-                    } finally {
-                        // 퀴즈 생성하고 나면  false 로 바꿔주기
-                        Asset targetAsset = assetRepository.findById(asset.getAssetId()).orElseThrow();
-                        targetAsset.updateQuizCreatingStatus(false);
-                        assetRepository.save(targetAsset);
-                    }
-                });
-            }
-            return getExistingQuizItems(nextQuiz.getQuizSetId());
+        if (solvedQuizSetIds.isEmpty()) {
+            solvedQuizSetIds = List.of(-1L);
         }
+
+        // 다음에 풀 시험지 -> 가장 과거에 생성된 시험지
+        final String finalMemoContext = memoContext;
+        QuizSet nextQuiz = quizSetRepository.findFirstByAssetAndQuizSetIdNotInOrderByQuizSetIdAsc(asset, solvedQuizSetIds)
+                .orElseGet(() -> {
+                    // 만약 DB에 아예 퀴즈가 하나도 없다면 동기로 하나 생성
+                    return createTestByAi(new QuizCreateByAiRequestDTO(asset.getAssetId(), finalMemoContext));
+                });
+
+        // 풀지 않은 시험지가 2개 이하면 -> 비동기로 퀴즈 생성 요청
+        long remainingCount = quizSetRepository.countByAssetAndQuizSetIdNotIn(asset, solvedQuizSetIds);
+        if (remainingCount <= 2 && !asset.isQuizCreating()) {
+            log.info("에셋 ID {}의 재고 부족! 남은 개수: {}", asset.getAssetId(),remainingCount);
+            // 퀴즈 생성 상태 바꿔주기
+            asset.updateQuizCreatingStatus(true);
+            assetRepository.save(asset);
+            // 비동기 호출
+            CompletableFuture.runAsync(() -> {
+                try {
+                    createTestByAi(new QuizCreateByAiRequestDTO(asset.getAssetId(), finalMemoContext));
+                } finally {
+                    // 퀴즈 생성하고 나면  false 로 바꿔주기
+                    Asset targetAsset = assetRepository.findById(asset.getAssetId()).orElseThrow();
+                    targetAsset.updateQuizCreatingStatus(false);
+                    assetRepository.save(targetAsset);
+                }
+            });
+        }
+        return getExistingQuizItems(nextQuiz.getQuizSetId());
     }
 
     // 2. 퀴즈 답안지 작성 및 등록 서비스
     /* 유저가 답을 제출하면 -> 그 결과를 QuizUserAnswer, QuizAttempt에 저장 -> 내부 로직에 의해 채점
     -> 그 결과가 QuizResult에 저장 (이때 aiReview는 기본값) -> 이후 ai 리뷰 보기 클릭하면 -> aiReview 값 업데이트 */
     @Transactional
-    public QuizAttemptResponseDTO createQuizAttempt(User user, QuizAttemptRequestDTO requestDTO){
+    public QuizAttemptResponseDTO createQuizAttempt(User user, Long quizSetId, QuizAttemptRequestDTO requestDTO){
 
         // 퀴즈 세트 조회
-        QuizSet quizSet = quizSetRepository.findById(requestDTO.getQuizSetId())
+        QuizSet quizSet = quizSetRepository.findById(quizSetId)
                 .orElseThrow(() -> new RuntimeException("퀴즈 세트를 찾을 수 없습니다."));
 
         // QuizAttempt에 저장
@@ -176,9 +176,9 @@ public class QuizServiceImpl implements QuizService {
     -> Ai 문맥 만들어서 -> AI의 분석 제공
      */
     @Transactional
-    public QuizAiAnalysisResponseDTO createQuizAiAnalyze(Long userId, QuizAiAnalysisRequestDTO requestDTO){
+    public QuizAiAnalysisResponseDTO createQuizAiAnalyze(Long userId, Long quizAttemptId){
 
-        QuizAttempt attempt = quizAttemptRepository.findById(requestDTO.getQuizAttemptId())
+        QuizAttempt attempt = quizAttemptRepository.findById(quizAttemptId)
                 .orElseThrow(() -> new EntityNotFoundException("퀴즈 시도 이력을 찾을 수 없습니다."));
 
         log.info("요청 userId: {}, 실제 데이터 주인 userId: {}", userId, attempt.getUser().getUserId());
@@ -189,7 +189,7 @@ public class QuizServiceImpl implements QuizService {
 
         // 유저가 틀린 문제 + 답안 가져오기
         List<QuizUserAnswer> wrongAnswers = quizUserAnswerRepository
-                .findWrongAnswersWithItemByAttemptId(requestDTO.getQuizAttemptId());
+                .findWrongAnswersWithItemByAttemptId(quizAttemptId);
 
         // 문맥 만들기
         String context = aiGenerateService.buildAssetContext(wrongAnswers);
@@ -249,9 +249,6 @@ public class QuizServiceImpl implements QuizService {
     }
 
     // 6.특정 에셋에 대한 퀴즈 이력 quiz_set_id 조회
-    // userId랑 assetId 값을 받으면 -> quiz_sets에서 assetId로 특정 에셋에 대한 quizSetId을 찾을 수 있음 --a
-    // userId로 -> quiz_user_attempts에서 userId로 특정 회원이 푼 quizSetId를 찾을 수 있음 --b
-    // a=b인 값을 찾으면 됨.
     public List<MyQuizSetsByAssetResponseDTO> fetchMyQuizSetsByAsset(Long userId, Long assetId){
         List<Long> solvedQuizSetIds = quizAttemptRepository.findSolvedQuizSetIds(userId, assetId);
 
@@ -274,7 +271,7 @@ public class QuizServiceImpl implements QuizService {
 
     // 에셋 + 부품 + 메모맥락
     @Transactional
-    QuizSet createTestByAi(QuizCreateByAiRequestDTO requestDTO){
+    public QuizSet createTestByAi(QuizCreateByAiRequestDTO requestDTO){
         // ai로 생성한 퀴즈들을 묶기
 
         Asset asset = assetRepository.findById(requestDTO.getAssetId())

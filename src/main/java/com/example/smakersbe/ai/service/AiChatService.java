@@ -17,6 +17,10 @@ public interface AiChatService {
     // 3. 회원의 isImportant 상태 갱신
     AiChatResponseDTO updateImportantStatus(Long userId, Long aiChatId, boolean isImportant);
 
+    void deleteChat(Long userId, Long aiChatId);
+
+    void deleteAllChatsByAsset(Long userId, Long assetId);
+
 
 
 

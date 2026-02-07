@@ -10,11 +10,13 @@ import java.util.List;
 
 public interface QuizService {
 
-    List<QuizCreateResponseDTO> createQuiz(QuizCreateRequestDTO requestDTO, User user);
+    List<QuizCreateResponseDTO> getQuizItemsByQuizSetId(Long quizSetId);
 
-    QuizAttemptResponseDTO createQuizAttempt(User user, QuizAttemptRequestDTO requestDTO);
+    List<QuizCreateResponseDTO> createQuiz(Long assetId, User user);
 
-    QuizAiAnalysisResponseDTO createQuizAiAnalyze(Long userId, QuizAiAnalysisRequestDTO requestDTO);
+    QuizAttemptResponseDTO createQuizAttempt(User user, Long quizSetId, QuizAttemptRequestDTO requestDTO);
+
+    QuizAiAnalysisResponseDTO createQuizAiAnalyze(Long userId, Long quizAttemptId);
 
     List<QuizHistoryResponseDTO> fetchMyQuizHistory(Long userId, Long assetId, Long quizSetId);
 

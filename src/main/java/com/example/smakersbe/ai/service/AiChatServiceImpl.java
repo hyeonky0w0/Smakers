@@ -26,6 +26,7 @@ import java.util.stream.Collectors;
 @Slf4j
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class AiChatServiceImpl implements AiChatService {
 
     private final AiChatRepository aiChatRepository;
@@ -36,6 +37,7 @@ public class AiChatServiceImpl implements AiChatService {
 
     // 질문 - 답변 서비스
     @Async
+    @Transactional
     public void sendQuestionStream(User user, AiChatRequestDTO requestDTO, Long assetId,SseEmitter emitter) {
         Asset asset = assetRepository.findById(assetId)
                 .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 에셋"));
@@ -91,6 +93,7 @@ public class AiChatServiceImpl implements AiChatService {
     }
 
     // 3. 회원 isImportant 상태 업데이트
+    @Transactional
     public AiChatResponseDTO updateImportantStatus(Long userId, Long aiChatId, boolean isImportant){
 
         AiChat aiChat = aiChatRepository.findById(aiChatId)
@@ -104,6 +107,18 @@ public class AiChatServiceImpl implements AiChatService {
         aiChatRepository.save(aiChat);
 
         return AiChatResponseDTO.from(aiChat);
+    }
+
+    // 4. 특정 채팅 하나 삭제
+    @Transactional
+    public void deleteChat(Long userId, Long aiChatId){
+        aiChatRepository.deleteByAiChatIdAndUser_UserId(aiChatId, userId);
+    }
+
+    // 5. 특정 에셋의 모든 채팅 삭제
+    @Transactional
+    public void deleteAllChatsByAsset(Long userId, Long assetId){
+        aiChatRepository.deleteByUser_UserIdAndAsset_AssetId(userId, assetId);
     }
 
 
