@@ -13,15 +13,10 @@ import jakarta.persistence.EntityNotFoundException;
 import com.example.smakersbe.asset.entity.Part;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.json.JSONArray;
-import org.json.JSONObject;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.client.RestTemplate;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -87,6 +82,23 @@ public class AiChatServiceImpl implements AiChatService {
         return aiChats.stream()
                 .map(AiChatResponseDTO::from)
                 .collect(Collectors.toUnmodifiableList());
+    }
+
+    // 3. 회원 isImportant 상태 업데이트
+    public AiChatResponseDTO updateImportantStatus(Long userId, Long aiChatId, boolean isImportant){
+
+        AiChat aiChat = aiChatRepository.findById(aiChatId)
+                .orElseThrow(() -> new EntityNotFoundException("채팅 내용이 없습니다."));
+
+        if (!aiChat.getUser().getUserId().equals(userId)) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "자신의 채팅만 중요 표시할 수 있습니다.");
+        }
+
+        aiChat.changeImportantStatus(isImportant);
+        aiChatRepository.save(aiChat);
+
+
+        return AiChatResponseDTO.from(aiChat);
     }
 
 
