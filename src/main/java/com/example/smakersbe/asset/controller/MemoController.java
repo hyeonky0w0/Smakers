@@ -90,4 +90,16 @@ public class MemoController {
         User user = userResolveService.getOrCreateByUuid(uuid);
         memoService.deleteMemo(user.getUserId(), assetId, memoId);
     }
+
+    @Operation(summary = "메모 중요 표시 토글", description = "memoId의 isImportant를 true/false로 토글합니다. (내 메모만 가능)")
+    @PatchMapping("/{memoId}/important")
+    public MemoResponse toggleImportant(
+            @RequestHeader("X-USER-UUID") String uuid,
+            @PathVariable Long assetId,
+            @PathVariable Long memoId
+    ) {
+        User user = userResolveService.getOrCreateByUuid(uuid);
+        return memoService.toggleImportant(user.getUserId(), assetId, memoId);
+    }
+
 }

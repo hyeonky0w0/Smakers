@@ -85,4 +85,14 @@ public class MemoService {
                 .updatedAt(memo.getUpdatedAt())
                 .build();
     }
+
+    public MemoResponse toggleImportant(Long userId, Long assetId, Long memoId) {
+        Memo memo = memoRepository
+                .findByMemoIdAndUser_UserIdAndAsset_AssetIdAndDeletedAtIsNull(memoId, userId, assetId)
+                .orElseThrow(() -> new IllegalArgumentException("Memo not found: " + memoId));
+
+        memo.setIsImportant(!Boolean.TRUE.equals(memo.getIsImportant())); // null-safe
+        return toResponse(memo); // @PreUpdate로 updatedAt 갱신
+    }
+
 }
