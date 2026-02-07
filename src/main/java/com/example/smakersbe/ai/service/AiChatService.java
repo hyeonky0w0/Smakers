@@ -12,6 +12,10 @@ public interface AiChatService {
     // 2. 회원의 에셋 질문 조회
     List<AiChatResponseDTO> getChats(Long assetId, String uuid);
 
+    // 3. 회원의 isImportant 상태 갱신
+    AiChatResponseDTO updateImportantStatus(Long userId, Long aiChatId, boolean isImportant);
+
+
 
 
 }
