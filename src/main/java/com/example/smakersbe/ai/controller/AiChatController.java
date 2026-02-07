@@ -8,8 +8,10 @@ import com.example.smakersbe.user.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.util.List;
 
@@ -24,25 +26,37 @@ public class AiChatController {
 
 
     // 1. 질문 요청 및 응답 컨트롤러
-    @PostMapping("/{assetId}/chats")
-    public ResponseEntity<AiChatResponseDTO> createQuestion(
+    @PostMapping(value = "/{assetId}/chats", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    public SseEmitter createQuestion(
+            @RequestHeader("X-USER-UUID") String uuid,
             @PathVariable Long assetId,
-            @RequestBody AiChatRequestDTO requestDTO){
+            @RequestBody AiChatRequestDTO requestDTO) {
 
-        log.info("AI 채팅 요청 수신: uuid={}, assetId={}, question={}",
-                requestDTO.getUuid(),assetId, requestDTO.getQuestion());
+        User user = userRepository.findByUuid(uuid)
+                .orElseThrow(() -> new EntityNotFoundException("유저 없음"));
 
-        AiChatResponseDTO response = aiChatService.sendQuestion(requestDTO, assetId);
-        return ResponseEntity.ok(response);
+        // 1. 통로 생성 (타임아웃 1분 설정)
+        SseEmitter emitter = new SseEmitter(60000L);
+
+        // 2. 서비스에 emitter를 넘겨서 비동기로 답변 생성 시작!
+        aiChatService.sendQuestionStream(user, requestDTO, assetId, emitter);
+
+        // 3. 통로를 즉시 반환 (사용자는 이때부터 연결됨)
+        return emitter;
     }
 
     // 2. 특정 에셋에 대한 사용자 대화 이력 조회
     @GetMapping("/{assetId}/chats")
     public ResponseEntity<List<AiChatResponseDTO>> chats(
-            @PathVariable Long assetId,
-            @RequestParam String uuid
+            @RequestHeader("X-USER-UUID") String uuid,
+            @PathVariable Long assetId
     ){
-        List<AiChatResponseDTO> response = aiChatService.getChats(assetId, uuid);
+        User user = userRepository.findByUuid(uuid)
+                .orElseThrow(() -> new EntityNotFoundException("해당 UUID를 가진 유저가 없습니다: " + uuid));
+        Long userId = user.getUserId();
+
+
+        List<AiChatResponseDTO> response = aiChatService.getChats(assetId, userId);
         return ResponseEntity.ok(response);
     }
 

@@ -275,7 +275,7 @@ public class QuizServiceImpl implements QuizService {
 
         String aiQuizJson = aiGenerateService.getAiAnswer(
                 "너는 기계공학 퀴즈 생성 도우미. 반드시 JSON 배열 형식으로만 응답해. [{\"question\": \"...\", \"options\": [\"...\"], \"answer\": 0, \"explanation\": \"...\", \"hint\": \"...\"}]",
-                "이 정보를 바탕으로 퀴즈 4개를 만들어줘.\n" + "선지(options)는 각 퀴즈당 4개야.\n" + "선지 번호(answer)은 골고루 섞어.\n" +"각 문제에 대한 힌트(hint)도 생성해줘",
+                "이 정보를 바탕으로 퀴즈 4개를 만들어줘.\n" + "선지(options)는 각 퀴즈당 4개야.\n" + "선지 번호(answer)은 골고루 섞어.\n" +"각 문제에 대한 힌트(hint)도 생성해줘\n"+"사용자가 메모한 특정 용어나 개념은 적극 활용하되, 그것이 메모에서 왔다는 사실은 비밀로 할 것.",
                 5000,
                 context);
 

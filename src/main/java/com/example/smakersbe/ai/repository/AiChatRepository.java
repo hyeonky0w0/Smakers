@@ -9,7 +9,7 @@ import java.util.List;
 @Repository
 public interface AiChatRepository extends JpaRepository<AiChat, Long> {
     // 회원의 에셋 대화 목록 조회
-    List<AiChat> findAllByAsset_AssetIdAndUser_UuidOrderByCreatedAtDesc(Long assetId, String uuid);
+    List<AiChat> findAllByAsset_AssetIdAndUser_UserIdOrderByCreatedAtDesc(Long assetId, Long userId);
 
     List<AiChat> findByUser_UserIdAndAsset_AssetIdAndIsImportantTrueOrderByCreatedAtAsc(Long userId, Long assetId);
 
