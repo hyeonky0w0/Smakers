@@ -20,18 +20,17 @@ import java.util.List;
 public class QuizAttemptResponseDTO {
     private Long quizAttemptId;
     private Long quizSetId;
-    private String uuid;
     private LocalDateTime createdAt;
     private Long totalCount;
     private Long correctCount;
-
     private List<QuizDetailResponseDTO> details; // 문제별 상세 결과
+
+    private static final com.fasterxml.jackson.databind.ObjectMapper objectMapper = new com.fasterxml.jackson.databind.ObjectMapper();
 
     public static QuizAttemptResponseDTO from(QuizAttempt attempt, List<QuizUserAnswer> answers, QuizResult result) {
         return QuizAttemptResponseDTO.builder()
                 .quizAttemptId(attempt.getQuizAttemptId())
                 .quizSetId(attempt.getQuizSet().getQuizSetId())
-                .uuid(attempt.getUser().getUuid())
                 .createdAt(result.getCreatedAt())
                 .totalCount(result.getTotalCount())
                 .correctCount(result.getCorrectCount())
@@ -48,7 +47,6 @@ public class QuizAttemptResponseDTO {
         private Long quizSetItemId;
         private String question;
         private String explanation;
-        private String hint;
         private List<String> options;
         private Long answer;
         private Long userChoice;
@@ -60,8 +58,8 @@ public class QuizAttemptResponseDTO {
             // json 파싱
             List<String> parsedOptions = new ArrayList<>();
             try {
-                parsedOptions = new com.fasterxml.jackson.databind.ObjectMapper()
-                        .readValue(item.getOptions(), new com.fasterxml.jackson.core.type.TypeReference<List<String>>() {});
+                parsedOptions = objectMapper.readValue(item.getOptions(),
+                        new com.fasterxml.jackson.core.type.TypeReference<List<String>>() {});
             } catch (Exception e) {
                 // 파싱 실패 시 예외 처리 (로그를 남기거나 빈 리스트 반환)
             }
@@ -70,7 +68,6 @@ public class QuizAttemptResponseDTO {
                     .quizSetItemId(item.getQuizSetItemId())
                     .question(item.getQuestion())
                     .explanation(item.getExplanation())
-                    .hint(item.getHint())
                     .options(parsedOptions)
                     .answer(item.getAnswer())
                     .userChoice(userAnswer.getUserChoice())

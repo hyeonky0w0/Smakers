@@ -12,15 +12,18 @@ public interface QuizService {
 
     List<QuizCreateResponseDTO> createQuiz(QuizCreateRequestDTO requestDTO, User user);
 
-    QuizAttemptResponseDTO createQuizAttempt(QuizAttemptRequestDTO requestDTO);
+    QuizAttemptResponseDTO createQuizAttempt(User user, QuizAttemptRequestDTO requestDTO);
 
-    QuizAiAnalysisResponseDTO createQuizAiAnalyze(QuizAiAnalysisRequestDTO requestDTO);
+    QuizAiAnalysisResponseDTO createQuizAiAnalyze(Long userId, QuizAiAnalysisRequestDTO requestDTO);
 
-    List<QuizHistoryResponseDTO> fetchMyQuizHistory(String uuid, Long assetId);
+    List<QuizHistoryResponseDTO> fetchMyQuizHistory(Long userId, Long assetId, Long quizSetId);
 
-    List<QuizzableAssetListResponseDTO> fetchMyQuizzableAssets(String uuid);
+    List<QuizzableAssetListResponseDTO> fetchMyQuizzableAssets(Long userId);
+
+    List<MyQuizSetsByAssetResponseDTO> fetchMyQuizSetsByAsset(Long userId, Long assetId);
 
 
 
 
-    }
+
+}

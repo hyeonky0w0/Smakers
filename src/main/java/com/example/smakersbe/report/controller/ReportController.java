@@ -1,6 +1,4 @@
 package com.example.smakersbe.report.controller;
-
-import com.example.smakersbe.report.dto.request.ReportRequestDTO;
 import com.example.smakersbe.report.service.ReportService;
 import com.example.smakersbe.user.entity.User;
 import com.example.smakersbe.user.repository.UserRepository;
@@ -23,7 +21,7 @@ public class ReportController {
     public ResponseEntity<byte[]> generateReport(
             @RequestHeader("X-USER-UUID") String uuid,
             @PathVariable Long assetId,
-            @RequestParam ("onlyImportant") boolean onlyImportant,
+            @RequestParam (value="onlyImportant", defaultValue = "false") boolean onlyImportant,
             @RequestPart("image")MultipartFile captureImage
     ) {
 

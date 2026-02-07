@@ -21,13 +21,6 @@ public interface UserAssetRepository extends JpaRepository<UserAsset, Long> {
     """)
     List<UserAsset> findAllByUserIdFetchAsset(@Param("userId") Long userId);
 
-    @Query("""
-    select ua
-    from UserAsset ua
-    join fetch ua.asset a
-    where ua.user.uuid = :uuid
-""")
-    List<UserAsset> findAllByUserUuidFetchAsset(@Param("uuid") String uuid);
 
     boolean existsByUser_UserIdAndAsset_AssetId(Long userId, Long assetId);
 

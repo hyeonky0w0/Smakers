@@ -14,7 +14,6 @@ import com.example.smakersbe.quiz.dto.response.*;
 import com.example.smakersbe.quiz.entity.*;
 import com.example.smakersbe.quiz.repository.*;
 import com.example.smakersbe.user.entity.User;
-import com.example.smakersbe.user.repository.UserRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -41,7 +40,6 @@ public class QuizServiceImpl implements QuizService {
     private final AiGenerateService aiGenerateService;
     private final AssetRepository assetRepository;
     private final QuizSetItemRepository quizSetItemRepository;
-    private final UserRepository userRepository;
     private final QuizAttemptRepository quizAttemptRepository;
     private final MemoRepository memoRepository;
     private final QuizUserAnswerRepository quizUserAnswerRepository;
@@ -124,11 +122,10 @@ public class QuizServiceImpl implements QuizService {
     // 2. 퀴즈 답안지 작성 및 등록 서비스
     /* 유저가 답을 제출하면 -> 그 결과를 QuizUserAnswer, QuizAttempt에 저장 -> 내부 로직에 의해 채점
     -> 그 결과가 QuizResult에 저장 (이때 aiReview는 기본값) -> 이후 ai 리뷰 보기 클릭하면 -> aiReview 값 업데이트 */
-    public QuizAttemptResponseDTO createQuizAttempt(QuizAttemptRequestDTO requestDTO){
+    @Transactional
+    public QuizAttemptResponseDTO createQuizAttempt(User user, QuizAttemptRequestDTO requestDTO){
 
-        // 유저 및 퀴즈 세트 조회
-        User user = userRepository.findByUuid(requestDTO.getUuid())
-                .orElseThrow(() -> new RuntimeException("유저를 찾을 수 없습니다."));
+        // 퀴즈 세트 조회
         QuizSet quizSet = quizSetRepository.findById(requestDTO.getQuizSetId())
                 .orElseThrow(() -> new RuntimeException("퀴즈 세트를 찾을 수 없습니다."));
 
@@ -178,12 +175,15 @@ public class QuizServiceImpl implements QuizService {
     /* 사용자의 quizAttemptId 데이터를 전송 -> QuizUserAnswer에서 quizAttemptId와 일치하고, isCorrect가 false인 데이터 전송 (quizSetItem과 조인)
     -> Ai 문맥 만들어서 -> AI의 분석 제공
      */
-    public QuizAiAnalysisResponseDTO createQuizAiAnalyze(QuizAiAnalysisRequestDTO requestDTO){
+    @Transactional
+    public QuizAiAnalysisResponseDTO createQuizAiAnalyze(Long userId, QuizAiAnalysisRequestDTO requestDTO){
 
         QuizAttempt attempt = quizAttemptRepository.findById(requestDTO.getQuizAttemptId())
                 .orElseThrow(() -> new EntityNotFoundException("퀴즈 시도 이력을 찾을 수 없습니다."));
 
-        if (!attempt.getUser().getUuid().equals(requestDTO.getUuid())) {
+        log.info("요청 userId: {}, 실제 데이터 주인 userId: {}", userId, attempt.getUser().getUserId());
+
+        if (!attempt.getUser().getUserId().equals(userId)) {
             throw new IllegalArgumentException("해당 퀴즈 기록에 접근할 권한이 없습니다.");
         }
 
@@ -216,17 +216,17 @@ public class QuizServiceImpl implements QuizService {
         return QuizAiAnalysisResponseDTO.from(quizResult);
     }
 
-    // 4. 특정 에셋에 대한 사용자의 퀴즈 히스토리 조회
-    public List<QuizHistoryResponseDTO> fetchMyQuizHistory(String uuid, Long assetId){
-        List<QuizAttempt> quizAttempts = quizAttemptRepository.findAllByUuidAndAssetId(uuid, assetId);
+    // 4. 특정 에셋 + 특정 시험에 대한 사용자의 퀴즈 히스토리 조회
+    public List<QuizHistoryResponseDTO> fetchMyQuizHistory(Long userId, Long assetId, Long quizSetId){
+        List<QuizAttempt> quizAttempts = quizAttemptRepository
+                .findAllByUser_UserIdAndQuizSet_Asset_AssetIdAndQuizSet_QuizSetIdOrderByCreatedAtDesc(userId, assetId, quizSetId);
 
         return quizAttempts.stream()
                 .map(attempt -> {
                     QuizResult result = quizResultRepository.findByQuizAttempt(attempt).orElse(null);
-
-                    List<QuizUserAnswer> allAnswers = quizUserAnswerRepository.findAllByQuizAttempt(attempt);
-                    List<QuizUserAnswer> wrongAnswers = allAnswers.stream() //전체 데이터 중
-                            .filter(answer -> !answer.getIsCorrect()) // 틀린 것만 필터링
+                    List<QuizUserAnswer> wrongAnswers = quizUserAnswerRepository.findAllByQuizAttempt(attempt)
+                            .stream()
+                            .filter(answer -> !answer.getIsCorrect())
                             .toList();
 
                     return QuizHistoryResponseDTO.from(attempt, result, wrongAnswers);
@@ -236,8 +236,8 @@ public class QuizServiceImpl implements QuizService {
 
     // 5. 사용자가 학습했던 에셋에 대해서만 퀴즈 썸네일 반환
     // userAsset 테이블에 있는 assetId을 가지고 -> asset의 assetName, assetThumbnailUrl 반환
-    public List<QuizzableAssetListResponseDTO> fetchMyQuizzableAssets(String uuid){
-        List<UserAsset> assets = userAssetRepository.findAllByUserUuidFetchAsset(uuid);
+    public List<QuizzableAssetListResponseDTO> fetchMyQuizzableAssets(Long userId){
+        List<UserAsset> assets = userAssetRepository.findAllByUserIdFetchAsset(userId);
 
         return assets.stream()
                 .map(ua -> QuizzableAssetListResponseDTO.builder()
@@ -245,6 +245,18 @@ public class QuizServiceImpl implements QuizService {
                         .assetName(ua.getAsset().getAssetName())
                         .assetThumbnailUrl(ua.getAsset().getAssetThumbnailUrl())
                         .build())
+                .toList();
+    }
+
+    // 6.특정 에셋에 대한 퀴즈 이력 quiz_set_id 조회
+    // userId랑 assetId 값을 받으면 -> quiz_sets에서 assetId로 특정 에셋에 대한 quizSetId을 찾을 수 있음 --a
+    // userId로 -> quiz_user_attempts에서 userId로 특정 회원이 푼 quizSetId를 찾을 수 있음 --b
+    // a=b인 값을 찾으면 됨.
+    public List<MyQuizSetsByAssetResponseDTO> fetchMyQuizSetsByAsset(Long userId, Long assetId){
+        List<Long> solvedQuizSetIds = quizAttemptRepository.findSolvedQuizSetIds(userId, assetId);
+
+        return solvedQuizSetIds.stream()
+                .map(quizSetId -> new MyQuizSetsByAssetResponseDTO(quizSetId))
                 .toList();
     }
 
@@ -339,7 +351,7 @@ public class QuizServiceImpl implements QuizService {
                         .assetId(item.getQuizSet().getAsset().getAssetId())
                         .quizSetItemId(item.getQuizSetItemId())
                         .question(item.getQuestion())
-                        .options(parseOptions(item.getOptions())) // 우리가 만든 JSON 파싱 메서드 활용!
+                        .options(parseOptions(item.getOptions()))
                         .hint(item.getHint())
                         .build())
                 .collect(Collectors.toList());
