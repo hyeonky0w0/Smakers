@@ -28,4 +28,10 @@ public interface QuizAttemptRepository extends JpaRepository<QuizAttempt, Long> 
             "ORDER BY qa.quizAttemptId DESC")
     List<QuizAttempt> findAllByUuidAndAssetId(@Param("uuid") String uuid, @Param("assetId") Long assetId);
 
+    List<QuizAttempt> findAllByUser_UserIdAndQuizSet_Asset_AssetIdAndQuizSet_QuizSetIdOrderByCreatedAtDesc(Long userId, Long assetId, Long quizSetId);
+
+    @Query("SELECT DISTINCT qa.quizSet.quizSetId FROM QuizAttempt qa " +
+            "WHERE qa.user.userId = :userId " +
+            "AND qa.quizSet.asset.assetId = :assetId")
+    List<Long> findSolvedQuizSetIds(@Param("userId") Long userId, @Param("assetId") Long assetId);
 }

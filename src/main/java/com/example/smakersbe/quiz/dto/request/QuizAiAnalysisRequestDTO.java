@@ -9,7 +9,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class QuizAiAnalysisRequestDTO {
 
-    private String uuid;
     private Long quizAttemptId;
 
 
