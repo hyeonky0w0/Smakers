@@ -75,6 +75,30 @@ public class AiChatController {
         return ResponseEntity.ok(response);
     }
 
+    // 4. 특정 aiChat 삭제하기
+    @DeleteMapping("/{aiChatId}")
+    public ResponseEntity<Void> deleteChat(
+            @RequestHeader("X-USER-UUID") String uuid,
+            @PathVariable Long aiChatId) {
+
+        User user = userRepository.findByUuid(uuid).orElseThrow();
+        aiChatService.deleteChat(user.getUserId(), aiChatId);
+
+        return ResponseEntity.noContent().build(); // 204 No Content
+    }
+
+    // 5. 전체 aiChat 삭제하기
+    @DeleteMapping("/{assetId}/chats")
+    public ResponseEntity<Void> deleteAllChats(
+            @RequestHeader("X-USER-UUID") String uuid,
+            @PathVariable Long assetId) {
+
+        User user = userRepository.findByUuid(uuid).orElseThrow();
+        aiChatService.deleteAllChatsByAsset(user.getUserId(), assetId);
+
+        return ResponseEntity.noContent().build(); // 204 No Content
+    }
+
 
 
 }

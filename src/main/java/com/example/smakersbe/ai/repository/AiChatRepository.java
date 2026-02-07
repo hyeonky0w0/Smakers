@@ -14,4 +14,8 @@ public interface AiChatRepository extends JpaRepository<AiChat, Long> {
     List<AiChat> findByUser_UserIdAndAsset_AssetIdAndIsImportantTrueOrderByCreatedAtAsc(Long userId, Long assetId);
 
     List<AiChat> findByUser_UserIdAndAsset_AssetIdOrderByCreatedAtAsc(Long userId, Long assetId);
+
+    void deleteByAiChatIdAndUser_UserId(Long aiChatId, Long userId);
+
+    void deleteByUser_UserIdAndAsset_AssetId(Long userId, Long assetId);
 }

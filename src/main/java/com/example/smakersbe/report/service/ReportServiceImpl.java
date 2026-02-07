@@ -32,7 +32,7 @@ public class ReportServiceImpl implements ReportService {
 
     // pdf 추출
     // 프론트에서 user정보 + aiChats + memos 에 대한 특정 Id값들 받기 -> 레파지토리로 각각의 데이터 추출 -> pdf 생성 -> url 반환
-    // case1) isImportant 들만 모아서 추추출, case2) 전체 추출
+    // case1) isImportant 들만 모아서 추출, case2) 전체 추출
     @Override
     @Transactional(readOnly = true)
     public byte[] createReport (Long userId, Long assetId, boolean onlyImportant, MultipartFile captureImage){

@@ -33,6 +33,7 @@ import com.example.smakersbe.asset.repository.MemoRepository;
 @Service
 @Slf4j
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class QuizServiceImpl implements QuizService {
 
     private final QuizSetRepository quizSetRepository;
@@ -249,9 +250,6 @@ public class QuizServiceImpl implements QuizService {
     }
 
     // 6.특정 에셋에 대한 퀴즈 이력 quiz_set_id 조회
-    // userId랑 assetId 값을 받으면 -> quiz_sets에서 assetId로 특정 에셋에 대한 quizSetId을 찾을 수 있음 --a
-    // userId로 -> quiz_user_attempts에서 userId로 특정 회원이 푼 quizSetId를 찾을 수 있음 --b
-    // a=b인 값을 찾으면 됨.
     public List<MyQuizSetsByAssetResponseDTO> fetchMyQuizSetsByAsset(Long userId, Long assetId){
         List<Long> solvedQuizSetIds = quizAttemptRepository.findSolvedQuizSetIds(userId, assetId);
 
@@ -274,7 +272,7 @@ public class QuizServiceImpl implements QuizService {
 
     // 에셋 + 부품 + 메모맥락
     @Transactional
-    QuizSet createTestByAi(QuizCreateByAiRequestDTO requestDTO){
+    public QuizSet createTestByAi(QuizCreateByAiRequestDTO requestDTO){
         // ai로 생성한 퀴즈들을 묶기
 
         Asset asset = assetRepository.findById(requestDTO.getAssetId())
