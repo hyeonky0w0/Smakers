@@ -36,6 +36,9 @@ cloud:
   aws:
     s3:
       bucket-name: smakers-bucket
+      prefix: workflow-files   #
+    cloudfront:
+      domain: https://d3guzrii5mz947.cloudfront.net
     credentials:
       access-key: ${AWS_ACCESS_KEY_ID}
       secret-key: ${AWS_SECRET_ACCESS_KEY}
