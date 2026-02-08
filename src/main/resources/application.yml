@@ -7,14 +7,51 @@ spring:
     username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
   jpa:
+    database: mysql
+    database-platform: org.hibernate.dialect.MySQLDialect
     hibernate:
       ddl-auto: update
     properties:
       hibernate:
         format_sql: true
 
+springdoc:
+  api-docs:
+    version: openapi_3_0
+
+
 management:
   endpoints:
     web:
       exposure:
         include: health
+
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 50MB
+      resolve-lazily: true
+
+cloud:
+  aws:
+    s3:
+      bucket-name: smakers-bucket
+      prefix: workflow-files   #
+    cloudfront:
+      domain: https://d3guzrii5mz947.cloudfront.net
+    credentials:
+      access-key: ${AWS_ACCESS_KEY_ID}
+      secret-key: ${AWS_SECRET_ACCESS_KEY}
+    region:
+      static: ap-northeast-2
+    stack:
+      auto: false
+
+cors:
+  allowed-origins: http://localhost:5500,http://localhost:5173,http://localhost:63342
+
+
+openai:
+  api:
+    key: ${OPENAI_API_KEY}
+

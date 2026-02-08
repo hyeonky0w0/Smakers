@@ -25,17 +25,40 @@ repositories {
 }
 
 dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
+
     compileOnly 'org.projectlombok:lombok'
-    runtimeOnly 'com.mysql:mysql-connector-j'
     annotationProcessor 'org.projectlombok:lombok'
-    testImplementation 'org.springframework.boot:spring-boot-starter-data-jpa-test'
-    testImplementation 'org.springframework.boot:spring-boot-starter-validation-test'
+
+    runtimeOnly 'com.mysql:mysql-connector-j'
+
+    // Swagger (springdoc) - Boot4 호환 최신 2.x로
+    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.0'
+
+    // s3
+    implementation platform('software.amazon.awssdk:bom:2.20.120')
+    implementation 'software.amazon.awssdk:s3'
+    implementation "software.amazon.awssdk:s3:2.25.60"
+    implementation "software.amazon.awssdk:auth:2.25.60"
+    implementation "software.amazon.awssdk:regions:2.25.60"
+
+    // json 파싱
+    implementation 'com.google.code.gson:gson:2.10.1'
+    implementation 'org.json:json:20231013'
+
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
-    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.1.0'
-    implementation 'org.springframework.boot:spring-boot-starter-web'
+
+    // HTML을 PDF로 변환
+    implementation 'com.itextpdf:html2pdf:5.0.0'
+    // 템플릿 엔진
+    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+    //WebClient
+    implementation 'org.springframework.boot:spring-boot-starter-webflux'
 }
+
 
 tasks.named('test') {
     useJUnitPlatform()

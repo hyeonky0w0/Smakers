@@ -1,0 +1,39 @@
+package com.example.smakersbe.quiz.entity;
+
+import com.example.smakersbe.asset.entity.Asset;
+import jakarta.persistence.*;
+import lombok.*;
+
+@Entity
+@Table(name = "quiz_set_items")
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
+@Builder
+public class QuizSetItem {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name="quiz_set_item_id", nullable = false, updatable = false)
+    private Long quizSetItemId;
+
+    @Column(name="question", columnDefinition = "TEXT",nullable = false)
+    private String question;
+
+    @Column(name="options",columnDefinition = "json", nullable = false)
+    private String options;
+
+    @Column(name="answer", nullable = false)
+    private Long answer;
+
+    @Column(name="explanation",columnDefinition = "TEXT", nullable = false)
+    private String explanation;
+
+    @Column(name="hint", columnDefinition = "TEXT",nullable = false)
+    private String hint;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name ="quiz_set_id", nullable = false)
+        private QuizSet quizSet;
+
+
+}
