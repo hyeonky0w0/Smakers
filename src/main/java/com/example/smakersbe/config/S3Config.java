@@ -25,18 +25,4 @@ public class S3Config {
                 )
                 .build();
     }
-
-//    @Bean
-//    public S3Presigner s3Presigner(
-//            @Value("${cloud.aws.region}") String region,
-//            @Value("${cloud.aws.credentials.access-key}") String accessKey,
-//            @Value("${cloud.aws.credentials.secret-key}") String secretKey
-//    ) {
-//        return S3Presigner.builder()
-//                .region(Region.of(region))
-//                .credentialsProvider(
-//                        StaticCredentialsProvider.create(AwsBasicCredentials.create(accessKey, secretKey))
-//                )
-//                .build();
-//    }
 }

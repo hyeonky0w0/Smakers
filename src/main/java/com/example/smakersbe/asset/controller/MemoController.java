@@ -94,8 +94,11 @@ public class MemoController {
     @Operation(summary = "메모 중요 표시 토글", description = "memoId의 isImportant를 true/false로 토글합니다. (내 메모만 가능)")
     @PatchMapping("/{memoId}/important")
     public MemoResponse toggleImportant(
+            @Parameter(description = "사용자 식별 UUID", example = "test-uuid-001", required = true)
             @RequestHeader("X-USER-UUID") String uuid,
+            @Parameter(description = "에셋 ID", example = "1", required = true)
             @PathVariable Long assetId,
+            @Parameter(description = "메모 ID", example = "1", required = true)
             @PathVariable Long memoId
     ) {
         User user = userResolveService.getOrCreateByUuid(uuid);
