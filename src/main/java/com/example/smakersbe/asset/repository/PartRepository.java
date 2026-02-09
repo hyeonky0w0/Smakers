@@ -1,5 +1,6 @@
 package com.example.smakersbe.asset.repository;
 
+import com.example.smakersbe.asset.entity.Asset;
 import com.example.smakersbe.asset.entity.Part;
 import org.springframework.data.jpa.repository.JpaRepository;
 
@@ -15,5 +16,7 @@ public interface PartRepository extends JpaRepository<Part, Long> {
 
     Optional<Part> findByAsset_AssetIdAndPartId(Long assetId, Long partId);
 
+    Optional<Part> findByAssetAndPartName(Asset asset, String partName);
+    List<Part> findAllByAsset(Asset asset);
 }
 
