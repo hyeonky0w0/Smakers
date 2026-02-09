@@ -4,8 +4,7 @@ import com.example.smakersbe.asset.entity.Asset;
 import com.example.smakersbe.asset.repository.AssetRepository;
 import com.example.smakersbe.quiz.entity.QuizSet;
 import com.example.smakersbe.quiz.entity.QuizSetItem;
-import com.example.smakersbe.quiz.repository.QuizSetItemRepository;
-import com.example.smakersbe.quiz.repository.QuizSetRepository;
+import com.example.smakersbe.quiz.repository.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
@@ -22,11 +21,25 @@ import java.util.List;
 public class QuizDatabaseSeeder implements CommandLineRunner {
     private final QuizSetRepository quizSetRepository;
     private final QuizSetItemRepository quizSetItemRepository;
+    private final QuizAttemptRepository quizAttemptRepository;
+    private final QuizResultRepository quizResultRepository;
+    private final QuizUserAnswerRepository quizUserAnswerRepository;
     private final AssetRepository assetRepository;
+
 
     @Override
     @Transactional
     public void run(String... args) throws Exception {
+
+        log.info("=== 퀴즈 데이터 전면 초기화 및 시딩 시작 ===");
+
+        // 1. 역순 삭제 (외래 키 제약 조건 방지)
+        quizUserAnswerRepository.deleteAllInBatch();
+        quizResultRepository.deleteAllInBatch();
+        quizAttemptRepository.deleteAllInBatch();
+        quizSetItemRepository.deleteAllInBatch();
+        quizSetRepository.deleteAllInBatch();
+        log.info("기존 퀴즈 관련 모든 테이블 데이터 삭제 완료");
         if (quizSetRepository.count() > 0) {
             log.info("이미 퀴즈 데이터가 존재하므로 시더를 실행하지 않습니다.");
             return;
