@@ -59,8 +59,14 @@ public class AiChatServiceImpl implements AiChatService {
                 question).subscribe(
                 token -> {
                     try {
-                        emitter.send(token);
-                        fullAnswer.append(token);
+                        // 만약 token 안에 "data:" 가 포함되어 있다면 지우고 전송!
+                        // (현재 로그를 보면 토큰 자체가 중첩된 상태로 넘어오는 것 같습니다)
+                        String cleanToken = token.replace("data:", "").trim();
+
+                        if (!cleanToken.isEmpty()) {
+                            emitter.send(cleanToken); // SseEmitter가 알아서 '진짜' data: 하나만 붙여줍니다.
+                            fullAnswer.append(cleanToken);
+                        }
                     } catch (IOException e) {
                         log.error("SSE 전송 에러", e);
                     }
