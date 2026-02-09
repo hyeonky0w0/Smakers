@@ -59,8 +59,12 @@ public class AiChatServiceImpl implements AiChatService {
                 question).subscribe(
                 token -> {
                     try {
-                        emitter.send(token);
-                        fullAnswer.append(token);
+                        String cleanToken = token.replace("data:", "").trim();
+
+                        if (!cleanToken.isEmpty()) {
+                            emitter.send(cleanToken); 
+                            fullAnswer.append(cleanToken);
+                        }
                     } catch (IOException e) {
                         log.error("SSE 전송 에러", e);
                     }
