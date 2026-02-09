@@ -90,14 +90,14 @@ public class PartSeeder implements CommandLineRunner {
                         .partGlbUrl("https://d3guzrii5mz947.cloudfront.net/static/parts/drone/glb/main-frame.glb")
                         .build(),
 
-                Part.builder()
-                        .asset(drone)
-                        .partName("Main frame_MIR")
-                        .partDescription("메인 프레임 구조를 기반으로 설계된 확장형 기체 프레임입니다.")
-                        .material("금속")
-                        .partThumbnailUrl("https://d3guzrii5mz947.cloudfront.net/static/parts/drone/thumbnail/main-frame_MIR.png")
-                        .partGlbUrl("https://d3guzrii5mz947.cloudfront.net/static/parts/drone/glb/main-frame-MIR.glb")
-                        .build(),
+//                Part.builder()
+//                        .asset(drone)
+//                        .partName("Main frame_MIR")
+//                        .partDescription("메인 프레임 구조를 기반으로 설계된 확장형 기체 프레임입니다.")
+//                        .material("금속")
+//                        .partThumbnailUrl("https://d3guzrii5mz947.cloudfront.net/static/parts/drone/thumbnail/main-frame_MIR.png")
+//                        .partGlbUrl("https://d3guzrii5mz947.cloudfront.net/static/parts/drone/glb/main-frame-MIR.glb")
+//                        .build(),
 
                 Part.builder()
                         .asset(drone)
@@ -120,6 +120,15 @@ public class PartSeeder implements CommandLineRunner {
                 Part.builder()
                         .asset(drone)
                         .partName("xyz")
+                        .partDescription("드론의 기울기와 가속도, 회전 움직임을 감지하여 비행 안정성을 유지하는 가속도·자이로 센서(IMU)로, 실리콘 기반 MEMS 센서와 PCB 기판, 보호 하우징으로 구성된 전자 부품")
+                        .material("실리콘 반도체 칩, PCB, 플라스틱")
+                        .partThumbnailUrl("https://d3guzrii5mz947.cloudfront.net/static/parts/drone/thumbnail/xyz.png")
+                        .partGlbUrl("https://d3guzrii5mz947.cloudfront.net/static/parts/drone/glb/xyz.glb")
+                        .build(),
+
+                Part.builder()
+                        .asset(drone)
+                        .partName("Gyroscope sensor")
                         .partDescription("드론의 기울기와 가속도, 회전 움직임을 감지하여 비행 안정성을 유지하는 가속도·자이로 센서(IMU)로, 실리콘 기반 MEMS 센서와 PCB 기판, 보호 하우징으로 구성된 전자 부품")
                         .material("실리콘 반도체 칩, PCB, 플라스틱")
                         .partThumbnailUrl("https://d3guzrii5mz947.cloudfront.net/static/parts/drone/thumbnail/xyz.png")
@@ -212,25 +221,25 @@ public class PartSeeder implements CommandLineRunner {
                 // ===================== Machine Vice (3-*) =====================
                 Part.builder()
                         .asset(machineVice)
-                        .partName("Part1 Fuhrung")
+                        .partName("Fuhrung")
                         .partDescription("머신 바이스에서 이동 죠의 직선 운동을 안내하는 가이드 부품.\n이동 시 정렬을 유지하며, 마찰을 최소화해 안정적인 클램핑 동작을 지원.")
                         .material("금속")
                         .partThumbnailUrl("https://d3guzrii5mz947.cloudfront.net/static/parts/machine-vice/thumbnail/part1-fuhrung.png")
                         .partGlbUrl("https://d3guzrii5mz947.cloudfront.net/static/parts/machine-vice/glb/part1-fuhrung.glb")
                         .build(),
+//
+//                Part.builder()
+//                        .asset(machineVice)
+//                        .partName("Part1")
+//                        .partDescription("나사 구동에 따라 전후로 이동하며 공작물을 가압하는 죠 부품.\n고정 죠와 함께 공작물을 클램핑하고, 가공 중 위치 안정성과 고정력을 확보.")
+//                        .material("금속")
+//                        .partThumbnailUrl("https://d3guzrii5mz947.cloudfront.net/static/parts/machine-vice/thumbnail/part1.png")
+//                        .partGlbUrl("https://d3guzrii5mz947.cloudfront.net/static/parts/machine-vice/glb/part1.glb")
+//                        .build(),
 
                 Part.builder()
                         .asset(machineVice)
-                        .partName("Part1")
-                        .partDescription("나사 구동에 따라 전후로 이동하며 공작물을 가압하는 죠 부품.\n고정 죠와 함께 공작물을 클램핑하고, 가공 중 위치 안정성과 고정력을 확보.")
-                        .material("금속")
-                        .partThumbnailUrl("https://d3guzrii5mz947.cloudfront.net/static/parts/machine-vice/thumbnail/part1.png")
-                        .partGlbUrl("https://d3guzrii5mz947.cloudfront.net/static/parts/machine-vice/glb/part1.glb")
-                        .build(),
-
-                Part.builder()
-                        .asset(machineVice)
-                        .partName("Part2 Feste Backe")
+                        .partName("Feste Backe")
                         .partDescription("머신 바이스에 고정된 죠로, 이동 죠와 함께 공작물을 지지하며, 가공 중 위치 기준과 고정 안정성을 제공.")
                         .material("금속")
                         .partThumbnailUrl("https://d3guzrii5mz947.cloudfront.net/static/parts/machine-vice/thumbnail/part2-feste-backe.png")
@@ -239,7 +248,7 @@ public class PartSeeder implements CommandLineRunner {
 
                 Part.builder()
                         .asset(machineVice)
-                        .partName("Part3-lose backe")
+                        .partName("lose backe")
                         .partDescription("머신 바이스에서 이동하는 죠 부품. 나사 구동에 따라 전후로 이동하며, 공작물을 고정하고 클램핑력을 전달.")
                         .material("금속")
                         .partThumbnailUrl("https://d3guzrii5mz947.cloudfront.net/static/parts/machine-vice/thumbnail/part3-lose-backe.png")
@@ -248,7 +257,7 @@ public class PartSeeder implements CommandLineRunner {
 
                 Part.builder()
                         .asset(machineVice)
-                        .partName("Part4 spindelsockel")
+                        .partName("spindelsockel")
                         .partDescription("스핀들(리드 스크류)을 지지하는 베이스 부품.\n스핀들의 회전 축을 고정하며, 나사 구동 시 안정적인 동력 전달과 정렬을 유지.")
                         .material("금속")
                         .partThumbnailUrl("https://d3guzrii5mz947.cloudfront.net/static/parts/machine-vice/thumbnail/part4-spindelsockel.png")
@@ -257,7 +266,7 @@ public class PartSeeder implements CommandLineRunner {
 
                 Part.builder()
                         .asset(machineVice)
-                        .partName("Part5-Spannbacke")
+                        .partName("Spannbacke")
                         .partDescription("공작물과 직접 접촉하여 고정하는 클램핑 죠 부품.\n고정·이동 죠에 장착되어 공작물을 안정적으로 가압하며,\n가공 중 미끄럼을 방지하고 고정력을 전달.")
                         .material("금속")
                         .partThumbnailUrl("https://d3guzrii5mz947.cloudfront.net/static/parts/machine-vice/thumbnail/part5-spannbacke.png")
@@ -266,7 +275,7 @@ public class PartSeeder implements CommandLineRunner {
 
                 Part.builder()
                         .asset(machineVice)
-                        .partName("Part6-fuhrungschiene")
+                        .partName("fuhrungschiene")
                         .partDescription("이동 죠의 직선 운동을 안내하는 가이드 레일 부품.\n이동 경로를 안정적으로 유지하며,\n클램핑 동작 시 정렬 정확도와 작동 안정성을 확보.")
                         .material("금속")
                         .partThumbnailUrl("https://d3guzrii5mz947.cloudfront.net/static/parts/machine-vice/thumbnail/part6-fuhrungschiene.png")
@@ -275,7 +284,7 @@ public class PartSeeder implements CommandLineRunner {
 
                 Part.builder()
                         .asset(machineVice)
-                        .partName("Part7-TrapezSpindel")
+                        .partName("TrapezSpindel")
                         .partDescription("회전 운동을 직선 운동으로 변환하는 나사 구동 부품.\n회전 시 이동 죠를 전후로 이동시키며,\n머신 바이스의 클램핑 힘을 생성하고 전달.")
                         .material("금속")
                         .partThumbnailUrl("https://d3guzrii5mz947.cloudfront.net/static/parts/machine-vice/thumbnail/part7-trapezspindel.png")
@@ -284,7 +293,7 @@ public class PartSeeder implements CommandLineRunner {
 
                 Part.builder()
                         .asset(machineVice)
-                        .partName("Part8-grundplatte")
+                        .partName("grundplatte")
                         .partDescription("머신 바이스의 하부를 구성하는 베이스 플레이트 부품.\n각 구성 요소를 지지하고 결합하며,\n장비 설치 시 전체 구조의 강성과 안정성을 확보.")
                         .material("금속")
                         .partThumbnailUrl("https://d3guzrii5mz947.cloudfront.net/static/parts/machine-vice/thumbnail/part8-grundplatte.png")
@@ -293,7 +302,7 @@ public class PartSeeder implements CommandLineRunner {
 
                 Part.builder()
                         .asset(machineVice)
-                        .partName("Part9-Druckhulse")
+                        .partName("Druckhulse")
                         .partDescription("스핀들 구동 시 발생하는 축방향 하중을 지지하는 슬리브 부품.\n하중을 균일하게 전달하며,\n회전 부품의 마찰 감소와 구조 보호를 보조.")
                         .material("금속")
                         .partThumbnailUrl("https://d3guzrii5mz947.cloudfront.net/static/parts/machine-vice/thumbnail/part9-druckhulse.png")
@@ -314,7 +323,7 @@ public class PartSeeder implements CommandLineRunner {
 
                 Part.builder()
                         .asset(robotArm)
-                        .partName("Part2")
+                        .partName("Shoulder Joint Housing")
                         .partDescription("로봇 암의 하부 관절을 구성하는 회전 구동 부품.\n베이스와 상부 링크를 연결하며,\n관절 회전을 통해 로봇 암의 초기 동작 범위와 방향 제어를 담당.")
                         .material("금속")
                         .partThumbnailUrl("https://example.com/parts/robot-arm/4-2-part2.png")
@@ -323,7 +332,7 @@ public class PartSeeder implements CommandLineRunner {
 
                 Part.builder()
                         .asset(robotArm)
-                        .partName("Part3")
+                        .partName("Upper Arm Link")
                         .partDescription("로봇 암의 하부 링크를 구성하는 연결 부품.\n두 관절을 연결해 동작 범위를 확장하며,\n회전 운동에 따른 하중과 토크를 안정적으로 전달.")
                         .material("금속")
                         .partThumbnailUrl("https://example.com/parts/robot-arm/4-3-part3.png")
@@ -332,7 +341,7 @@ public class PartSeeder implements CommandLineRunner {
 
                 Part.builder()
                         .asset(robotArm)
-                        .partName("Part4")
+                        .partName("Elbow Joint Module")
                         .partDescription("로봇 암의 중간 관절 구동부를 구성하는 회전 유닛.\n상부 링크와 하부 링크를 연결하며,\n관절 회전을 통해 로봇 암의 자세 변화와 정밀한 위치 제어를 담당.")
                         .material("금속")
                         .partThumbnailUrl("https://example.com/parts/robot-arm/4-4-part4.png")
@@ -341,7 +350,7 @@ public class PartSeeder implements CommandLineRunner {
 
                 Part.builder()
                         .asset(robotArm)
-                        .partName("Part5")
+                        .partName("Lower Arm Link")
                         .partDescription("로봇 암의 상부 링크 연결부를 구성하는 관절 하우징 부품.\n인접한 링크를 결합해 회전 축을 형성하며,\n관절 구동 시 발생하는 하중과 토크를 안정적으로 지지.")
                         .material("금속")
                         .partThumbnailUrl("https://example.com/parts/robot-arm/4-5-part5.png")
@@ -350,7 +359,7 @@ public class PartSeeder implements CommandLineRunner {
 
                 Part.builder()
                         .asset(robotArm)
-                        .partName("Part6")
+                        .partName("Wrist Joint Unit")
                         .partDescription("로봇 암의 말단 관절로, 상부 링크와 그리퍼 부분을 연결하는 연결 부품.\n회전 관절 구조를 통해 그리퍼의 각도 조절을 가능하게 하며,\n작업 대상에 대한 정밀한 위치 제어와 안정적인 동작을 지원.")
                         .material("금속")
                         .partThumbnailUrl("https://example.com/parts/robot-arm/4-6-part6.png")
@@ -359,7 +368,7 @@ public class PartSeeder implements CommandLineRunner {
 
                 Part.builder()
                         .asset(robotArm)
-                        .partName("Part7")
+                        .partName("End Effector Mount")
                         .partDescription("로봇 암의 말단에 장착되는 그리퍼 결합 부품으로,\n구동부의 회전력을 그리퍼로 전달하는 인터페이스 역할을 수행.\n원형 플랜지 구조를 통해 정밀한 정렬이 가능하며,\n그리퍼의 안정적인 체결과 반복 작업 시 신뢰성 있는 동작을 확보.")
                         .material("금속")
                         .partThumbnailUrl("https://example.com/parts/robot-arm/4-7-part7.png")
@@ -368,7 +377,7 @@ public class PartSeeder implements CommandLineRunner {
 
                 Part.builder()
                         .asset(robotArm)
-                        .partName("Part8")
+                        .partName("Gripper")
                         .partDescription("로봇 암의 말단에 장착되는 그리퍼 구성 부품으로,\n링크 구조를 통해 개폐 동작을 수행하며 대상물을 직접 파지.\n관절부 회전을 통해 파지 각도를 조절할 수 있고,\n접촉 면의 형상으로 안정적인 고정력과 작업 정밀도를 확보.")
                         .material("금속")
                         .partThumbnailUrl("https://example.com/parts/robot-arm/4-8-part8.png")
@@ -458,14 +467,14 @@ public class PartSeeder implements CommandLineRunner {
                         .partGlbUrl("https://d3guzrii5mz947.cloudfront.net/static/parts/suspension/glb/BASE.glb")
                         .build(),
 
-                Part.builder()
-                        .asset(suspension)
-                        .partName("NIT")
-                        .partDescription("서스펜션 구성 부품을 축 방향으로 단단히 고정하는 체결 부품.\n샤프트 및 스프링과 결합되어 풀림을 방지하며, 하중과 진동이 반복되는 환경에서도 안정적인 고정력을 유지.")
-                        .material("금속")
-                        .partThumbnailUrl("https://d3guzrii5mz947.cloudfront.net/static/parts/suspension/thumbnail/NIT.png")
-                        .partGlbUrl("https://d3guzrii5mz947.cloudfront.net/static/parts/suspension/glb/NIT.glb")
-                        .build(),
+//                Part.builder()
+//                        .asset(suspension)
+//                        .partName("NIT")
+//                        .partDescription("서스펜션 구성 부품을 축 방향으로 단단히 고정하는 체결 부품.\n샤프트 및 스프링과 결합되어 풀림을 방지하며, 하중과 진동이 반복되는 환경에서도 안정적인 고정력을 유지.")
+//                        .material("금속")
+//                        .partThumbnailUrl("https://d3guzrii5mz947.cloudfront.net/static/parts/suspension/thumbnail/NIT.png")
+//                        .partGlbUrl("https://d3guzrii5mz947.cloudfront.net/static/parts/suspension/glb/NIT.glb")
+//                        .build(),
 
                 Part.builder()
                         .asset(suspension)
