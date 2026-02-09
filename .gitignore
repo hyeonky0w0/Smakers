@@ -35,3 +35,18 @@ out/
 
 ### VS Code ###
 .vscode/
+# env
+.env
+.env.*
+*.save
+
+# ci/ssh 남는 잡파일(너 목록에 있는 것들)
+CACHED
+ERROR
+[internal]
+reading
+resolve
+resolving
+transferring
+unpacking
+=

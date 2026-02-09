@@ -5,8 +5,6 @@ services:
     restart: always
     environment:
       MYSQL_DATABASE: smakers
-      MYSQL_USER: root
-      MYSQL_PASSWORD: 1234
       MYSQL_ROOT_PASSWORD: 1234
       TZ: Asia/Seoul
     volumes:
@@ -35,10 +33,13 @@ services:
     restart: always
     ports:
       - "80:80"
+      - "443:443"
     depends_on:
       - spring
     volumes:
       - ./nginx/conf.d:/etc/nginx/conf.d:ro
+      - /etc/letsencrypt:/etc/letsencrypt:ro
+      - /var/lib/letsencrypt:/var/lib/letsencrypt:ro
 
 volumes:
   mysql_data:
