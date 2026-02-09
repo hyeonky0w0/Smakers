@@ -2,7 +2,9 @@ package com.example.smakersbe.report.service;
 
 import com.example.smakersbe.ai.entity.AiChat;
 import com.example.smakersbe.ai.repository.AiChatRepository;
+import com.example.smakersbe.asset.entity.Asset;
 import com.example.smakersbe.asset.entity.Memo;
+import com.example.smakersbe.asset.repository.AssetRepository;
 import com.example.smakersbe.asset.repository.MemoRepository;
 import com.example.smakersbe.asset.repository.UserAssetRepository;
 import com.example.smakersbe.report.dto.request.ReportRequestDTO;
@@ -11,6 +13,7 @@ import com.example.smakersbe.report.dto.request.SelectedMemoData;
 import com.example.smakersbe.report.util.PdfGenerator;
 import com.example.smakersbe.user.entity.User;
 import com.example.smakersbe.user.repository.UserRepository;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -29,6 +32,7 @@ public class ReportServiceImpl implements ReportService {
     private final UserAssetRepository userAssetRepository;
     private final PdfGenerator pdfGenerator;
     private final AiChatRepository aiChatRepository;
+    private final AssetRepository assetRepository;
 
     // pdf 추출
     // 프론트에서 user정보 + aiChats + memos 에 대한 특정 Id값들 받기 -> 레파지토리로 각각의 데이터 추출 -> pdf 생성 -> url 반환
@@ -41,6 +45,11 @@ public class ReportServiceImpl implements ReportService {
         if (!isOwner) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "해당 에셋에 대한 접근 권한이 없습니다.");
         }
+
+        // 에셋 이름 가져오기
+        Asset asset = assetRepository.findById(assetId)
+                .orElseThrow(() -> new EntityNotFoundException("에셋을 찾을 수 없습니다."));
+        String assetName = asset.getAssetName();
 
         // 메모 가져오기
         List<Memo> targetMemos = onlyImportant
@@ -64,7 +73,7 @@ public class ReportServiceImpl implements ReportService {
                 .toList();
 
 
-        return pdfGenerator.generate(selectedMemos, selectedChats, captureImage);
+        return pdfGenerator.generate(assetName,selectedMemos, selectedChats, captureImage);
 
     }
 
