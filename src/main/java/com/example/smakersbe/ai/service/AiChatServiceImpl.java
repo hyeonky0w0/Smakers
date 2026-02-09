@@ -59,7 +59,7 @@ public class AiChatServiceImpl implements AiChatService {
                 question).subscribe(
                 token -> {
                     try {
-                        emitter.send(SseEmitter.event().data(token)); // 한 글자씩 전송!
+                        emitter.send(token);
                         fullAnswer.append(token);
                     } catch (IOException e) {
                         log.error("SSE 전송 에러", e);
