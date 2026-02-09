@@ -15,6 +15,8 @@ import com.example.smakersbe.workflow.repository.WorkFlowRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import com.example.smakersbe.workflow.dto.request.WorkFlowRenameRequest;
+import com.example.smakersbe.workflow.dto.response.WorkFlowRenameResponse;
 
 import java.util.HashMap;
 import java.util.List;
@@ -177,5 +179,41 @@ public class WorkFlowService {
                     .build();
             edgeRepository.save(edge);
         }
+    }
+
+    public WorkFlowRenameResponse rename(Long userId, Long workflowId, WorkFlowRenameRequest req) {
+        WorkFlow wf = workFlowRepository.findByWorkflowIdAndUser_UserId(workflowId, userId)
+                .orElseThrow(() -> new IllegalArgumentException("Workflow not found"));
+
+        if (req == null || req.name() == null || req.name().isBlank()) {
+            throw new IllegalArgumentException("name is required");
+        }
+
+        // ✅ revision 충돌 방지
+        if (req.revision() == null || !req.revision().equals(wf.getRevision())) {
+            throw new IllegalStateException("Revision conflict");
+        }
+
+        // (선택) 너무 긴 이름 방지
+        String newName = req.name().trim();
+        if (newName.length() > 100) {
+            throw new IllegalArgumentException("name is too long (max 100)");
+        }
+
+        wf.setWorkflowName(newName);
+
+        // 이름만 바뀌어도 문서 변경이므로 revision +1 (추천)
+        wf.setRevision(wf.getRevision() + 1);
+
+        // updatedAt은 @PreUpdate로 갱신됨
+        workFlowRepository.save(wf);
+
+        return new WorkFlowRenameResponse(
+                true,
+                wf.getWorkflowId(),
+                wf.getWorkflowName(),
+                wf.getRevision(),
+                wf.getUpdatedAt()
+        );
     }
 }
