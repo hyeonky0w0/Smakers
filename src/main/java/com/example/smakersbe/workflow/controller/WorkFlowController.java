@@ -24,6 +24,9 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
 
+import com.example.smakersbe.workflow.dto.request.WorkFlowRenameRequest;
+import com.example.smakersbe.workflow.dto.response.WorkFlowRenameResponse;
+
 @Tag(name = "Workflow", description = "워크플로우(문서) CRUD + Autosave API")
 @RestController
 @RequestMapping("/api/workflows")
@@ -39,6 +42,67 @@ public class WorkFlowController {
         }
         return userResolveService.getOrCreateByUuid(uuid);
     }
+
+    @Operation(
+            summary = "워크플로우 이름 변경",
+            description = """
+            워크플로우 이름만 변경합니다.
+            - 전체 autosave(PUT) 없이 이름만 바꾸고 싶을 때 사용합니다.
+            - revision을 함께 보내 충돌(409)을 방지합니다.
+            """
+    )
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "이름 변경 성공"),
+            @ApiResponse(
+                    responseCode = "409",
+                    description = "Revision 충돌",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(example = """
+                        {
+                          "status": 409,
+                          "error": "CONFLICT",
+                          "message": "Revision conflict. Please reload workflow and try again."
+                        }
+                        """)
+                    )
+            )
+    })
+    @PatchMapping("/{workflowId}/name")
+    public ResponseEntity<WorkFlowRenameResponse> rename(
+            @Parameter(
+                    description = "브라우저 스토리지 UUID (로그인 없이 유저 식별)",
+                    required = true,
+                    example = "test-uuid-001"
+            )
+            @RequestHeader("X-USER-UUID") String uuid,
+
+            @Parameter(description = "워크플로우 ID", required = true, example = "1")
+            @PathVariable Long workflowId,
+
+            @RequestBody(
+                    required = true,
+                    description = "이름 변경 요청 바디",
+                    content = @Content(
+                            schema = @Schema(implementation = WorkFlowRenameRequest.class),
+                            examples = @ExampleObject(
+                                    name = "Rename Example",
+                                    summary = "이름 변경 예시",
+                                    value = """
+                                {
+                                  "name": "Renamed Workflow",
+                                  "revision": 3
+                                }
+                                """
+                            )
+                    )
+            )
+            @org.springframework.web.bind.annotation.RequestBody WorkFlowRenameRequest req
+    ) {
+        User user = resolveUser(uuid);
+        return ResponseEntity.ok(workFlowService.rename(user.getUserId(), workflowId, req));
+    }
+
 
     // 워크플로우 리스트 조회
     @Operation(
@@ -227,4 +291,5 @@ public class WorkFlowController {
         User user = resolveUser(uuid);
         return ResponseEntity.ok(workFlowService.save(user.getUserId(), workflowId, req));
     }
+
 }
