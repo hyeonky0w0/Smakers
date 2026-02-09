@@ -59,10 +59,10 @@ public class AiChatServiceImpl implements AiChatService {
                 question).subscribe(
                 token -> {
                     try {
-                        String cleanToken = token.replace("data:", "").trim();
+                        String cleanToken = token.replace("data:", "");
 
                         if (!cleanToken.isEmpty()) {
-                            emitter.send(cleanToken); 
+                            emitter.send(cleanToken);
                             fullAnswer.append(cleanToken);
                         }
                     } catch (IOException e) {
