@@ -27,10 +27,11 @@ public class PdfGenerator {
 
     private final TemplateEngine templateEngine;
 
-    public byte[] generate(List<SelectedMemoData> memos, List<SelectedAiChatData> chats, MultipartFile image) {
+    public byte[] generate(String assetName, List<SelectedMemoData> memos, List<SelectedAiChatData> chats, MultipartFile image) {
         try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
             // 1. 타임리프 컨텍스트 설정
             Context context = new Context();
+            context.setVariable("assetName", assetName);
             context.setVariable("memos", memos);
             context.setVariable("chats", chats);
 
@@ -43,7 +44,7 @@ public class PdfGenerator {
             // 3. HTML 템플릿 처리
             String htmlContent = templateEngine.process("report-template", context);
 
-            // 4. ⭐ 폰트 설정 (이 부분이 핵심!)
+            // 4. 폰트 설정
             ConverterProperties properties = new ConverterProperties();
             FontProvider fontProvider = new DefaultFontProvider(false, false, false); // 기본 폰트 끄기
 
@@ -56,7 +57,7 @@ public class PdfGenerator {
             fontProvider.addFont(fontProgram);
             properties.setFontProvider(fontProvider);
 
-            // 5. PDF 변환 (설정값 properties를 꼭 같이 넘겨줘야 함!)
+            // 5. PDF 변환
             HtmlConverter.convertToPdf(htmlContent, baos, properties);
 
             return baos.toByteArray();
